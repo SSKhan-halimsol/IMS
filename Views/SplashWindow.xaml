@@ -1,0 +1,77 @@
+﻿<Window x:Class="IMS.Views.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Splash Screen"
+        WindowStartupLocation="CenterScreen"
+        Height="450" Width="800"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False">
+
+    <Border Background="#1e1e1e" CornerRadius="10" Padding="0">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Background="Black" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="0,50,0,0">
+                    <TextBlock Text="INTERVIEW"
+                        Foreground="#92d400"
+                        FontSize="32" FontWeight="Bold"
+                        HorizontalAlignment="Center"/>
+                    <TextBlock Text="Management System"
+                        Foreground="White"
+                        FontSize="20" HorizontalAlignment="Center"
+                        Margin="0,5,0,20"/>
+
+
+                </StackPanel>
+                <StackPanel Grid.Row="1" Margin="0,30,0,0">
+                    <TextBlock Text="An Interview Management System is a software solution designed to streamline and automate the hiring process. It helps HR teams schedule interviews, track candidate progress, and manage communication efficiently. The system often includes features like calendar integration, automated reminders, and video interview support. It reduces manual work and improves coordination among recruiters and interviewers. Interview data and feedback can be stored centrally for easy access and analysis. Many systems also integrate with applicant tracking systems (ATS). Overall, it enhances the speed and effectiveness of recruitment.It enhances efficiency for recruiters by automating administrative tasks and improves the candidate experience through clear, professional, and timely communication, creating a positive impression of the company."
+                        Foreground="LightGray" 
+                        TextWrapping="Wrap" FontSize="10"
+                        TextAlignment="Justify" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Padding="10,0"/>    
+
+                </StackPanel>
+                <!-- Status text at the bottom -->
+                <TextBlock x:Name="StatusText"
+                       Grid.Row="2"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Left"
+                       Foreground="DimGray"
+                       FontSize="10"
+                       FontWeight="SemiBold"
+                       Margin="10"
+                       Text="Initializing..." >
+                    <TextBlock.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard RepeatBehavior="5x">
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     From="0" To="2"
+                                     Duration="0:0:1"
+                                     AutoReverse="True" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </TextBlock.Triggers>
+                </TextBlock>
+            </Grid>
+
+            <Image Source="/Photos/splash.PNG"  Grid.Column="1"
+                   Stretch="UniformToFill"
+                   VerticalAlignment="Stretch"
+                   HorizontalAlignment="Stretch"/>
+        </Grid>
+    </Border>
+</Window>

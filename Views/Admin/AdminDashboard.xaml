@@ -1,0 +1,53 @@
+﻿<Window x:Class="IMS.Views.Admin.AdminDashboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Admin Dashboard"
+        WindowState="Maximized"
+        Background="#0b0b0b"
+        MinWidth="800" MinHeight="600">
+
+    <DockPanel LastChildFill="True">
+        <!-- Sidebar -->
+        <Grid DockPanel.Dock="Left" Width="240" Background="#111">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <!-- Top content -->
+                <RowDefinition Height="Auto"/>
+                <!-- Logout button -->
+            </Grid.RowDefinitions>
+
+            <!-- Top Section -->
+            <StackPanel Grid.Row="0" Margin="0,20,0,40">
+                <!-- Logo / Title -->
+                <StackPanel Margin="0,0,0,40">
+                    <TextBlock Text="INTERVIEW" Foreground="#92d400" FontSize="22" FontWeight="Bold" 
+                               HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                    <TextBlock Text="Management System" Foreground="White" FontSize="12" 
+                               HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Navigation Buttons -->
+                <Button x:Name="BtnHome" Content="🏠 Home" Height="40" Width="200" Margin="0,4" Click="BtnHome_Click"
+                        Background="Transparent" Foreground="White" Style="{StaticResource NavButtonStyle}"/>
+
+                <Button x:Name="BtnApplicants" Content="👥 Recent Applicants" Width="200" Height="40" Margin="0,4" Click="BtnApplicants_Click"
+                        Background="Transparent" Foreground="White" Style="{StaticResource NavButtonStyle}"/>
+
+                <Button x:Name="BtnSelected" Content="🏆 Successful Applicants" Width="200" Height="40" Margin="0,4" Click="Btnsucc_Click"
+                        Background="Transparent" Foreground="White" Style="{StaticResource NavButtonStyle}"/>
+            </StackPanel>
+
+            <!-- Logout Button at very bottom -->
+            <Button x:Name="BtnLogout" Grid.Row="1" Content="🚪 Logout" Height="40" Width="160"
+                    HorizontalAlignment="Center" Margin="0,20,0,20"
+                    Background="Red" Foreground="White" FontWeight="Bold" 
+                    Click="BtnLogout_Click"/>
+        </Grid>
+
+        <!-- Main Content Area -->
+        <Border Background="white" Margin="12" CornerRadius="12">
+            <ContentControl x:Name="MainContent"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        </Border>
+    </DockPanel>
+</Window>

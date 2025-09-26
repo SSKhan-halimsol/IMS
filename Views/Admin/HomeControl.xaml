@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="IMS.Views.Admin.HomeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+             Background="Black">
+
+    <Border Background="#0b0b0b" Margin="12" CornerRadius="12">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0" Margin="10">
+                <TextBlock Text="Welcome to Interview Management System"
+                           VerticalAlignment="Center" FontWeight="Bold"
+                           FontSize="26" Foreground="#92d400" 
+                           Margin="20,0,0,0"/>
+            </StackPanel>
+
+            <!-- Main Dashboard -->
+            <Grid Grid.Row="1" Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Line Chart -->
+                <Border Background="#1a1a1a" CornerRadius="5">
+                    <StackPanel>
+                        <TextBlock Text="Total Applicants Appeared Today" HorizontalAlignment="Center"
+                                   FontSize="12" Foreground="#92d400" Margin="0,0,0,10"/>
+                        <oxy:PlotView Model="{Binding LineChartModel}" Height="200" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Pie Chart -->
+                <Border Background="#1a1a1a" CornerRadius="5" Grid.Row="1" Grid.ColumnSpan="2">
+                    <StackPanel>
+                        <TextBlock Text="Total Applicants Appeared Last 6 months" HorizontalAlignment="Center"
+                                    FontSize="12" Foreground="#92d400" Margin="0,0,0,10"/>
+                        <oxy:PlotView Model="{Binding PieChartModel}" Height="270" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>
