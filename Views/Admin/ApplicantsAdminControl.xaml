@@ -33,18 +33,18 @@
 
             <!-- DataGrid -->
             <DataGrid Grid.Row="0"
-          ItemsSource="{Binding ApplicantsView}"
-          AutoGenerateColumns="False"
-          IsReadOnly="True"
-          AlternatingRowBackground="#222"
-          RowBackground="#111"
-          Foreground="White"
-          Background="Black"
-          HeadersVisibility="Column"
-          MouseDoubleClick="ApplicantsGrid_MouseDoubleClick"
-          GridLinesVisibility="Horizontal"
-          BorderBrush="Gray"
-          BorderThickness="1">
+                  ItemsSource="{Binding ApplicantsView}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  AlternatingRowBackground="#222"
+                  RowBackground="#111"
+                  Foreground="White"
+                  Background="Black"
+                  HeadersVisibility="Column"
+                  MouseDoubleClick="ApplicantsGrid_MouseDoubleClick"
+                  GridLinesVisibility="Horizontal"
+                  BorderBrush="Gray"
+                  BorderThickness="1">
 
                 <!-- Header Styling -->
                 <DataGrid.ColumnHeaderStyle>
@@ -59,8 +59,8 @@
                 </DataGrid.ColumnHeaderStyle>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" FontSize="12" Width="2*"/>
-                    <DataGridTextColumn Header="Applicant Name" Binding="{Binding ApplicantName}" FontSize="12" Width="2*"/>
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" FontSize="12" Width="*"/>
+                    <DataGridTextColumn Header="Applicant Name" Binding="{Binding ApplicantName}" FontSize="12" Width="3*"/>
                     <DataGridTextColumn Header="Father Name" Binding="{Binding FatherName}" FontSize="12" Width="2*"/>
                     <DataGridTextColumn Header="CNIC" Binding="{Binding CNIC}" FontSize="12" Width="2*"/>
                     <DataGridTextColumn Header="Email" Binding="{Binding Email}" FontSize="12" Width="3*"/>

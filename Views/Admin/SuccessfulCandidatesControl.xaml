@@ -29,6 +29,7 @@
                   RowBackground="#111"
                   Foreground="Black"
                   Background="Black"
+                  MouseDoubleClick="ApplicantsGrid_MouseDoubleClick"
                   HeadersVisibility="Column">
 
             <DataGrid.Columns>

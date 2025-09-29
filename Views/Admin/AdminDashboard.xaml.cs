@@ -28,7 +28,7 @@ namespace IMS.Views.Admin
         private void Btnsucc_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(BtnSelected);
-            MainContent.Content = new SuccessfulCandidatesControl();
+            MainContent.Content = new SuccessfulCandidatesControl(this);
         }
 
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
