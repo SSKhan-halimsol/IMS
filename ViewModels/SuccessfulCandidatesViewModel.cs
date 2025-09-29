@@ -22,9 +22,6 @@ namespace IMS.ViewModels
             _ = LoadAcceptedApplicantsAsync();
         }
 
-        public ICommand NextPageCommand { get; }
-        public ICommand PrevPageCommand { get; }
-
         
         private async Task LoadAcceptedApplicantsAsync()
         {

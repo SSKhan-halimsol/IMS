@@ -25,6 +25,13 @@ namespace IMS.ViewModels
             set { _pieChartModel = value; OnPropertyChanged("PieChartModel"); }
         }
 
+        private PlotModel _applicantVolumeChartModel;
+        public PlotModel ApplicantVolumeChartModel
+        {
+            get { return _applicantVolumeChartModel; }
+            set { _applicantVolumeChartModel = value; OnPropertyChanged("ApplicantVolumeChartModel"); }
+        }
+
         public HomeControlViewModel()
         {
             LoadCharts();
@@ -39,6 +46,7 @@ namespace IMS.ViewModels
                 {
                     BuildApplicantsBarChart(applicants);
                     BuildPieChart(applicants);
+                    BuildApplicantVolumeChart(applicants); // new chart
                 }
                 else
                 {
@@ -50,7 +58,6 @@ namespace IMS.ViewModels
                 System.Windows.MessageBox.Show("Error loading charts: " + ex.Message);
             }
         }
-
 
         private void BuildApplicantsBarChart(IEnumerable<Applicant> applicants)
         {
@@ -78,7 +85,6 @@ namespace IMS.ViewModels
                 };
                 model.Axes.Add(countAxis);
 
-                // Bar series
                 var barSeries = new BarSeries
                 {
                     Title = "Applicants Today",
@@ -96,10 +102,9 @@ namespace IMS.ViewModels
                 }
 
                 model.Series.Add(barSeries);
-                LineChartModel = model; // binding property
+                LineChartModel = model;
             }
         }
-
 
         private void BuildPieChart(IEnumerable<Applicant> applicants)
         {
@@ -135,6 +140,38 @@ namespace IMS.ViewModels
             PieChartModel = model;
         }
 
+        private void BuildApplicantVolumeChart(IEnumerable<Applicant> applicants)
+        {
+            var model = new PlotModel { Title = "" };
+
+            // Jobs on Y-axis (horizontal bars)
+            var jobAxis = new CategoryAxis { Position = AxisPosition.Left, Title = "Jobs" };
+            var grouped = applicants.GroupBy(a => a.AppliedFor).ToList();
+            foreach (var g in grouped)
+                jobAxis.Labels.Add(g.Key);
+            model.Axes.Add(jobAxis);
+
+            // Applicants on X-axis
+            var applicantAxis = new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                Title = "Total Applicants",
+                Minimum = 0
+            };
+            model.Axes.Add(applicantAxis);
+
+            // Horizontal bars
+            var barSeries = new BarSeries
+            {
+                ItemsSource = grouped.Select(g => new BarItem { Value = g.Count() }).ToList(),
+                FillColor = OxyColors.LimeGreen,
+                StrokeColor = OxyColors.Black,
+                StrokeThickness = 1
+            };
+
+            model.Series.Add(barSeries);
+            ApplicantVolumeChartModel = model;
+        }
 
         public void RefreshCharts()
         {

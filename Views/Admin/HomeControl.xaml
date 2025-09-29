@@ -4,46 +4,52 @@
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              Background="Black">
 
-    <Border Background="#0b0b0b" Margin="12" CornerRadius="12">
+    <Border Background="#0b0b0b" Margin="12" CornerRadius="12" Padding="20">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0" Margin="10">
-                <TextBlock Text="Welcome to Interview Management System"
-                           VerticalAlignment="Center" FontWeight="Bold"
-                           FontSize="26" Foreground="#92d400" 
-                           Margin="20,0,0,0"/>
-            </StackPanel>
+            <TextBlock Text="Welcome to Interview Management System"
+                       Grid.Row="0"
+                       HorizontalAlignment="Center"
+                       FontWeight="Bold"
+                       FontSize="28"
+                       Foreground="#92d400"
+                       Margin="0,10,0,20"/>
 
             <!-- Main Dashboard -->
-            <Grid Grid.Row="1" Margin="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <!-- Line Chart -->
-                <Border Background="#1a1a1a" CornerRadius="5">
+                <!-- Line Chart Card -->
+                <Border Background="#1a1a1a" CornerRadius="12" Padding="15">
                     <StackPanel>
-                        <TextBlock Text="Total Applicants Appeared Today" HorizontalAlignment="Center"
-                                   FontSize="12" Foreground="#92d400" Margin="0,0,0,10"/>
-                        <oxy:PlotView Model="{Binding LineChartModel}" Height="200" />
+                        <TextBlock Text="Applicants Today" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#92d400" Margin="0,0,0,10"/>
+                        <oxy:PlotView Model="{Binding LineChartModel}" VerticalAlignment="Stretch" Height="200" />
                     </StackPanel>
                 </Border>
 
-                <!-- Pie Chart -->
-                <Border Background="#1a1a1a" CornerRadius="5" Grid.Row="1" Grid.ColumnSpan="2">
+                <!-- Pie Chart Card -->
+                <Border Background="#1a1a1a" CornerRadius="12" Padding="15" Grid.Column="1">
                     <StackPanel>
-                        <TextBlock Text="Total Applicants Appeared Last 6 months" HorizontalAlignment="Center"
-                                    FontSize="12" Foreground="#92d400" Margin="0,0,0,10"/>
-                        <oxy:PlotView Model="{Binding PieChartModel}" Height="270" />
+                        <TextBlock Text="Applicants in Last 6 Months" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#92d400" Margin="0,0,0,10"/>
+                        <oxy:PlotView Model="{Binding PieChartModel}" VerticalAlignment="Stretch" Height="200" />
                     </StackPanel>
                 </Border>
             </Grid>
+            <Border Background="#1a1a1a" CornerRadius="12" Padding="15" Grid.Row="2" Grid.ColumnSpan="2">
+                <StackPanel>
+                    <TextBlock Text="Applicants Volume" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#92d400" Margin="0,0,0,10"/>
+                    <oxy:PlotView Model="{Binding ApplicantVolumeChartModel}" VerticalAlignment="Stretch" Height="230" />
+                </StackPanel>
+            </Border>
         </Grid>
     </Border>
 </UserControl>

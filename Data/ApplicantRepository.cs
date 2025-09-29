@@ -42,7 +42,7 @@ namespace IMS.Data
                             Date = reader["Date"] != DBNull.Value
                                 ? Convert.ToDateTime(reader["Date"])
                                 : DateTime.MinValue,
-                            Status = reader["Status"] as string ?? ""   // ✅ Added mapping
+                            Status = reader["Status"] as string ?? ""
                         };
                         list.Add(a);
                     }
