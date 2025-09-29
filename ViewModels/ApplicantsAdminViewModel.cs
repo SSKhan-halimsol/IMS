@@ -78,7 +78,7 @@ namespace IMS.ViewModels
             _ = SafeLoadApplicantsAsync();
         }
 
-        private IEnumerable<Applicant> FilteredApplicants =>
+        public IEnumerable<Applicant> FilteredApplicants =>
             _allApplicants.Where(a =>
                 string.IsNullOrWhiteSpace(SearchText) ||
                 (a.ApplicantName?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||

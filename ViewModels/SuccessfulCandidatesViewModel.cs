@@ -1,10 +1,15 @@
 ﻿using IMS.Data;
+using IMS.Helpers;
 using IMS.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace IMS.ViewModels
 {
@@ -17,6 +22,10 @@ namespace IMS.ViewModels
             _ = LoadAcceptedApplicantsAsync();
         }
 
+        public ICommand NextPageCommand { get; }
+        public ICommand PrevPageCommand { get; }
+
+        
         private async Task LoadAcceptedApplicantsAsync()
         {
             try
