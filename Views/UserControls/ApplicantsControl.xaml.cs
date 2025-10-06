@@ -1,4 +1,5 @@
-﻿using IMS.Helpers;
+﻿using IMS.Data;
+using IMS.Helpers;
 using IMS.Models;
 using IMS.ViewModels;
 using System;
@@ -17,6 +18,18 @@ namespace IMS.Views
         public ApplicantsControl()
         {
             InitializeComponent();
+            this.Loaded += ApplicantsControl_Loaded;
+        }
+        private void ApplicantsControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                parentWindow.WindowState = WindowState.Maximized;
+                parentWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                parentWindow.WindowStyle = WindowStyle.None;
+                parentWindow.ResizeMode = ResizeMode.NoResize;
+            }
         }
 
         private void NextBtn_Click(object sender, RoutedEventArgs e)
@@ -214,6 +227,14 @@ namespace IMS.Views
             {
                 MessageBox.Show("Error saving data: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+            Window parentWindow = Window.GetWindow(this);
+            parentWindow?.Close();
         }
     }
 }

@@ -8,83 +8,143 @@
         <vm:ApplicantsAdminViewModel/>
     </UserControl.DataContext>
 
-    <Grid Margin="12">
+    <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Search -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,8">
-            <TextBlock Text="Search :" VerticalAlignment="Center" Foreground="White" Margin="0,0,8,0"/>
-            <TextBox Width="240" Height="30"
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     VerticalContentAlignment="Center"
-                     ToolTip="Search applicants"/>
-            <Button Content="Refresh" Height="30" Margin="8,0,0,0"
-                    Command="{Binding RefreshCommand}"/>
-        </StackPanel>
+        <!-- Filter/Search Bar -->
+        <Border Background="#1E1E1E" CornerRadius="8" Padding="10" Margin="0,0,0,10" BorderBrush="#333" BorderThickness="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 
+                <!-- Name -->
+                <StackPanel>
+                    <TextBlock Text="Name" Foreground="#92d400" FontSize="12" Margin="0,0,0,2"/>
+                    <TextBox Width="150" Height="28"
+                             Text="{Binding SearchName, UpdateSourceTrigger=PropertyChanged}"
+                             Background="#111" Foreground="White" BorderBrush="#333" BorderThickness="1"
+                             ToolTip="Search by Name"/>
+                </StackPanel>
+
+                <!-- CNIC -->
+                <StackPanel>
+                    <TextBlock Text="CNIC" Foreground="#92d400" FontSize="12" Margin="0,0,0,2"/>
+                    <TextBox Width="150" Height="28"
+                             Text="{Binding SearchCNIC, UpdateSourceTrigger=PropertyChanged}"
+                             Background="#111" Foreground="White" BorderBrush="#333" BorderThickness="1"
+                             ToolTip="Search by CNIC"/>
+                </StackPanel>
+
+                <!-- Email -->
+                <StackPanel>
+                    <TextBlock Text="Email" Foreground="#92d400" FontSize="12" Margin="0,0,0,2"/>
+                    <TextBox Width="180" Height="28"
+                             Text="{Binding SearchEmail, UpdateSourceTrigger=PropertyChanged}"
+                             Background="#111" Foreground="White" BorderBrush="#333" BorderThickness="1"
+                             ToolTip="Search by Email"/>
+                </StackPanel>
+
+                <!-- Contact -->
+                <StackPanel>
+                    <TextBlock Text="Contact" Foreground="#92d400" FontSize="12" Margin="0,0,0,2"/>
+                    <TextBox Width="140" Height="28"
+                             Text="{Binding SearchContact, UpdateSourceTrigger=PropertyChanged}"
+                             Background="#111" Foreground="White" BorderBrush="#333" BorderThickness="1"
+                             ToolTip="Search by Contact Number"/>
+                </StackPanel>
+
+                <!-- Applied Date -->
+                <StackPanel>
+                    <TextBlock Text="Applied Date" Foreground="#92d400" FontSize="12" Margin="0,0,0,2"/>
+                    <DatePicker Width="160" Height="28"
+                                SelectedDate="{Binding SearchDate, UpdateSourceTrigger=PropertyChanged}"
+                                Background="#111" Foreground="White" BorderBrush="#333" BorderThickness="1">
+                        <!--DisplayDateEnd="{x:Static sys:DateTime.Now}">-->
+                        <DatePicker.Resources>
+                            <Style TargetType="DatePickerTextBox">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Background" Value="#111"/>
+                            </Style>
+                        </DatePicker.Resources>
+                    </DatePicker>
+                </StackPanel>
+
+                <!-- Clear Filters -->
+                <Button Content="Clear"
+                        Command="{Binding ClearFiltersCommand}"
+                        Width="80" Height="30"
+                        Margin="5,20,0,0"
+                        Background="#92d400"
+                        Foreground="Black"
+                        FontWeight="Bold"
+                        BorderBrush="Transparent"
+                        Cursor="Hand"/>
+            </StackPanel>
+        </Border>
+
+        <!-- DataGrid -->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- DataGrid -->
             <DataGrid Grid.Row="0"
-                  ItemsSource="{Binding ApplicantsView}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  AlternatingRowBackground="#222"
-                  RowBackground="#111"
-                  Foreground="White"
-                  Background="Black"
-                  HeadersVisibility="Column"
-                  MouseDoubleClick="ApplicantsGrid_MouseDoubleClick"
-                  GridLinesVisibility="Horizontal"
-                  BorderBrush="Gray"
-                  BorderThickness="1">
+                      ItemsSource="{Binding ApplicantsView}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      AlternatingRowBackground="#222"
+                      RowBackground="#111"
+                      Foreground="White"
+                      Background="Black"
+                      HeadersVisibility="Column"
+                      MouseDoubleClick="ApplicantsGrid_MouseDoubleClick"
+                      GridLinesVisibility="Horizontal"
+                      BorderBrush="Gray"
+                      BorderThickness="1"
+                      HorizontalGridLinesBrush="#333">
 
-                <!-- Header Styling -->
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="#333"/>
                         <Setter Property="Foreground" Value="White"/>
                         <Setter Property="FontWeight" Value="Bold"/>
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        <Setter Property="BorderBrush" Value="Gray"/>
+                        <Setter Property="BorderBrush" Value="#555"/>
                         <Setter Property="BorderThickness" Value="0,0,1,1"/>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" FontSize="12" Width="*"/>
-                    <DataGridTextColumn Header="Applicant Name" Binding="{Binding ApplicantName}" FontSize="12" Width="3*"/>
-                    <DataGridTextColumn Header="Father Name" Binding="{Binding FatherName}" FontSize="12" Width="2*"/>
-                    <DataGridTextColumn Header="CNIC" Binding="{Binding CNIC}" FontSize="12" Width="2*"/>
-                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" FontSize="12" Width="3*"/>
-                    <DataGridTextColumn Header="Contact number" Binding="{Binding ContactNo}" FontSize="12" Width="2*"/>
-                    <DataGridTextColumn Header="Experience" Binding="{Binding ExperienceDuration}" FontSize="12" Width="2*"/>
-                    <DataGridTextColumn Header="Applied On" Binding="{Binding Date, StringFormat={}{0:yyyy-MM-dd HH:mm}}" FontSize="12" Width="2*"/>
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*" FontSize="12"/>
+                    <DataGridTextColumn Header="Applicant Name" Binding="{Binding ApplicantName}" Width="2*" FontSize="12"/>
+                    <DataGridTextColumn Header="Father Name" Binding="{Binding FatherName}" Width="2*" FontSize="12"/>
+                    <DataGridTextColumn Header="CNIC" Binding="{Binding CNIC}" Width="2*" FontSize="12"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="3*" FontSize="12"/>
+                    <DataGridTextColumn Header="Contact No" Binding="{Binding ContactNo}" Width="2*" FontSize="12"/>
+                    <DataGridTextColumn Header="Experience" Binding="{Binding ExperienceDuration}" Width="2*" FontSize="12"/>
+                    <DataGridTextColumn Header="Applied On" Binding="{Binding Date, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="2*" FontSize="12"/>
                 </DataGrid.Columns>
+
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
                         <Setter Property="Foreground" Value="White"/>
-                        <Setter Property="FontSize" Value="14"/>
-                        <Setter Property="Padding" Value="6,2"/>
+                        <Setter Property="FontSize" Value="13"/>
+                        <Setter Property="Padding" Value="8,4"/>
                     </Style>
                 </DataGrid.CellStyle>
             </DataGrid>
-            
-            <!-- Pagination Buttons -->
+
+            <!-- Pagination -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                <Button Content="Previous" HorizontalAlignment="Left" Command="{Binding PrevPageCommand}" Margin="5"
-                IsEnabled="{Binding CanGoPrev}"/>
+                <Button Content="Previous" Command="{Binding PrevPageCommand}" Margin="5"
+                        IsEnabled="{Binding CanGoPrev}" Background="#92d400" Foreground="Black" FontWeight="Bold" Width="90" Height="30"/>
                 <TextBlock Text="{Binding CurrentPage}" Margin="5" Foreground="White"/>
+                <TextBlock Text="/" Margin="2" Foreground="White"/>
                 <TextBlock Text="{Binding TotalPages}" Margin="5" Foreground="White"/>
-                <Button Content="Next" Command="{Binding NextPageCommand}" Margin="5" HorizontalAlignment="Right" IsEnabled="{Binding CanGoNext}"/>
-                
+                <Button Content="Next" Command="{Binding NextPageCommand}" Margin="5"
+                        IsEnabled="{Binding CanGoNext}" Background="#92d400" Foreground="Black" FontWeight="Bold" Width="90" Height="30"/>
             </StackPanel>
         </Grid>
     </Grid>

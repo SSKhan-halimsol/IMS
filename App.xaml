@@ -239,7 +239,6 @@
                 </Setter>
             </Style>
 
-            <!-- DatePicker style -->
             <Style x:Key="RoundedDatePickerStyle" TargetType="DatePicker">
                 <Setter Property="Foreground" Value="{StaticResource InputForegroundBrush}"/>
                 <Setter Property="Background" Value="{StaticResource InputBackgroundBrush}"/>
@@ -248,38 +247,83 @@
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Padding" Value="6"/>
                 <Setter Property="Margin" Value="0,4,0,10"/>
+
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="DatePicker">
-                            <Border x:Name="Bd"
+                            <Grid>
+                                <!-- Outer border -->
+                                <Border x:Name="Bd"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="5">
-                                <Grid>
-                                    <DatePickerTextBox x:Name="PART_TextBox"
+                            CornerRadius="6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Text Box -->
+                                        <DatePickerTextBox x:Name="PART_TextBox"
                                                Background="Transparent"
-                                               Foreground="{TemplateBinding Foreground}"
                                                BorderThickness="0"
-                                               Margin="4,0,25,0"/>
-                                    <Button x:Name="PART_Button"
-                                    Width="20"
-                                    Height="20"
-                                    HorizontalAlignment="Right"
-                                    Margin="0,0,4,0"
-                                    VerticalAlignment="Center"
-                                    Content="📅"
-                                    Background="Transparent"
+                                               Foreground="{TemplateBinding Foreground}"
+                                               FontSize="{TemplateBinding FontSize}"
+                                               VerticalContentAlignment="Center"
+                                               Margin="6,0,0,0"/>
+
+                                        <!-- Calendar Button -->
+                                        <Button x:Name="PART_Button"
+                                    Grid.Column="1"
+                                    Width="32"
+                                    Height="28"
+                                    Margin="2"
+                                    Padding="0"
                                     BorderThickness="0"
-                                    Foreground="{TemplateBinding Foreground}"/>
-                                </Grid>
-                            </Border>
+                                    Background="Transparent"
+                                    Cursor="Hand"
+                                    VerticalAlignment="Center">
+                                            <TextBlock Text="📅"
+                                           FontSize="16"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"/>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Calendar Popup -->
+                                <Popup x:Name="PART_Popup"
+                           Placement="Bottom"
+                           StaysOpen="False"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           PopupAnimation="Slide">
+                                    <Border CornerRadius="6"
+                                Background="#1e1e1e"
+                                BorderBrush="{StaticResource AccentBrush}"
+                                BorderThickness="1">
+                                        <Calendar x:Name="PART_Calendar"
+                                      Foreground="{StaticResource InputForegroundBrush}"
+                                      Background="#1e1e1e"
+                                      BorderThickness="0"
+                                      SelectionMode="SingleDate"
+                                      IsTodayHighlighted="True"/>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+
+                            <!-- Triggers -->
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
                                 </Trigger>
                                 <Trigger Property="IsKeyboardFocusWithin" Value="True">
                                     <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.6"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>

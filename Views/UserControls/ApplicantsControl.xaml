@@ -176,7 +176,8 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-
+        <Button Content="Back Home" Height="30" Grid.Row="2" HorizontalAlignment="Left" Width="90" Background="#92d400" Foreground="Black"
+                FontWeight="Bold" FontSize="15" Click="Button_Click"></Button>
         <!-- Navigation buttons -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
             <Button x:Name="BackBtn" Content="← Back" Click="BackBtn_Click" Style="{StaticResource SecondaryButtonStyle}" Visibility="Collapsed"/>

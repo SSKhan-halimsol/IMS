@@ -2,11 +2,11 @@
 using IMS.Models;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace IMS.Views
 {
@@ -16,18 +16,22 @@ namespace IMS.Views
         private readonly Dictionary<int, int> _answers;
         private int _currentIndex;
         private readonly int _applicantId;
+        private readonly DispatcherTimer _questionTimer;
+        private readonly DispatcherTimer _totalTimer;
+        private int _questionTimeRemaining = 10;
+        private int _totalTimeRemaining;
+
         public QuizControl()
         {
             InitializeComponent();
-
         }
+
         public QuizControl(int applicantId, string experienceLevel, string designation)
         {
             InitializeComponent();
             _applicantId = applicantId;
             var allQuestions = QuizLoader.GetQuestions(experienceLevel ?? string.Empty, designation ?? string.Empty);
 
-            // Always pick up to 10 questions (randomized if more available)
             if (allQuestions != null && allQuestions.Count > 0)
             {
                 var rnd = new Random();
@@ -42,12 +46,21 @@ namespace IMS.Views
             _currentIndex = 0;
             WelcomeText.Text = $"Welcome!! Ready to take your {designation} quiz?";
 
-            if (_questions == null || _questions.Count == 0)
+            if (_questions.Count == 0)
             {
                 MessageBox.Show("No quiz questions available for this designation.", "Quiz", MessageBoxButton.OK, MessageBoxImage.Warning);
                 this.Visibility = Visibility.Collapsed;
                 return;
             }
+
+            // Initialize timers
+            _totalTimeRemaining = _questions.Count * 15;
+
+            _questionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            _questionTimer.Tick += QuestionTimer_Tick;
+
+            _totalTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            _totalTimer.Tick += TotalTimer_Tick;
 
             DisplayQuestion(_currentIndex);
             UpdateNavigation();
@@ -57,14 +70,59 @@ namespace IMS.Views
         {
             WelcomeScreen.Visibility = Visibility.Collapsed;
             QuizScreen.Visibility = Visibility.Visible;
+
+            _questionTimer.Start();
+            _totalTimer.Start();
         }
+
+        private void QuestionTimer_Tick(object sender, EventArgs e)
+        {
+            _questionTimeRemaining--;
+            ProgressText.Text = $"Question {_currentIndex + 1} of {_questions.Count}  |  Time Left: {_questionTimeRemaining}s";
+
+            if (_questionTimeRemaining <= 0)
+            {
+                MoveToNextQuestionOrSubmit();
+            }
+        }
+
+        private void TotalTimer_Tick(object sender, EventArgs e)
+        {
+            _totalTimeRemaining--;
+
+            if (_totalTimeRemaining <= 0)
+            {
+                _questionTimer.Stop();
+                _totalTimer.Stop();
+                SubmitQuiz(autoSubmit: true);
+            }
+        }
+
+        private void MoveToNextQuestionOrSubmit()
+        {
+            SaveCurrentSelection();
+            if (_currentIndex < _questions.Count - 1)
+            {
+                _currentIndex++;
+                DisplayQuestion(_currentIndex);
+                UpdateNavigation();
+            }
+            else
+            {
+                _questionTimer.Stop();
+                _totalTimer.Stop();
+                SubmitQuiz(autoSubmit: true);
+            }
+        }
+
         private void DisplayQuestion(int index)
         {
             if (index < 0 || index >= _questions.Count) return;
 
-            Question q = _questions[index];
+            _questionTimeRemaining = 15; // reset per-question timer
 
-            ProgressText.Text = string.Format("Question {0} of {1}", index + 1, _questions.Count);
+            Question q = _questions[index];
+            ProgressText.Text = $"Question {index + 1} of {_questions.Count}  |  Time Left: {_questionTimeRemaining}s";
             QuestionText.Text = q.Text ?? string.Empty;
 
             OptionsPanel.Children.Clear();
@@ -72,75 +130,58 @@ namespace IMS.Views
             {
                 if (q.Options != null && q.Options.Length > i && !string.IsNullOrEmpty(q.Options[i]))
                 {
-                    RadioButton rb = new RadioButton();
-                    rb.Content = q.Options[i];
-                    rb.Tag = i; // store the option index
-                    rb.GroupName = "QuizOptions";
-                    rb.Margin = new Thickness(0, 6, 0, 6);
-                    rb.Foreground = System.Windows.Media.Brushes.White;
+                    RadioButton rb = new RadioButton
+                    {
+                        Content = q.Options[i],
+                        Tag = i,
+                        GroupName = "QuizOptions",
+                        Margin = new Thickness(0, 6, 0, 6),
+                        Foreground = System.Windows.Media.Brushes.White
+                    };
                     OptionsPanel.Children.Add(rb);
                 }
             }
 
-            int saved;
-            if (_answers.TryGetValue(index, out saved))
+            if (_answers.TryGetValue(index, out int saved))
             {
-                foreach (object child in OptionsPanel.Children)
+                foreach (RadioButton rb in OptionsPanel.Children.OfType<RadioButton>())
                 {
-                    RadioButton rb = child as RadioButton;
-                    if (rb != null && rb.Tag is int && (int)rb.Tag == saved)
+                    if ((int)rb.Tag == saved)
                     {
                         rb.IsChecked = true;
                         break;
                     }
                 }
             }
-
-            MainScrollViewer.ScrollToTop();
         }
 
         private void SaveCurrentSelection()
         {
-            int questionIndex = _currentIndex;
             int foundIndex = -1;
-            foreach (object child in OptionsPanel.Children)
+            foreach (RadioButton rb in OptionsPanel.Children.OfType<RadioButton>())
             {
-                RadioButton rb = child as RadioButton;
-                if (rb != null && rb.IsChecked == true)
+                if (rb.IsChecked == true)
                 {
-                    if (rb.Tag is int)
-                        foundIndex = (int)rb.Tag;
+                    foundIndex = (int)rb.Tag;
                     break;
                 }
             }
 
             if (foundIndex >= 0)
-            {
-                _answers[questionIndex] = foundIndex;
-            }
+                _answers[_currentIndex] = foundIndex;
             else
-            {
-                if (_answers.ContainsKey(questionIndex))
-                    _answers.Remove(questionIndex);
-            }
+                _answers.Remove(_currentIndex);
         }
 
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
             SaveCurrentSelection();
-
-            if (_currentIndex < _questions.Count - 1)
-            {
-                _currentIndex++;
-                DisplayQuestion(_currentIndex);
-                UpdateNavigation();
-            }
+            MoveToNextQuestionOrSubmit();
         }
 
         private void BackBtn_Click(object sender, RoutedEventArgs e)
         {
             SaveCurrentSelection();
-
             if (_currentIndex > 0)
             {
                 _currentIndex--;
@@ -151,85 +192,19 @@ namespace IMS.Views
 
         private void SubmitBtn_Click(object sender, RoutedEventArgs e)
         {
+            _questionTimer.Stop();
+            _totalTimer.Stop();
+            SubmitQuiz(autoSubmit: false);
+        }
+
+        private void SubmitQuiz(bool autoSubmit)
+        {
             SaveCurrentSelection();
 
             int score = 0;
             for (int i = 0; i < _questions.Count; i++)
             {
                 if (_answers.TryGetValue(i, out int selected))
-                {
-                    if (selected == _questions[i].CorrectOptionIndex)
-                        score++;
-                }
-            }
-
-            bool passed = score >= (_questions.Count / 2); // pass if >=50%
-            DateTime submittedOn = DateTime.Now;
-
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(DbChecker.ConnectionString))
-                {
-                    conn.Open();
-
-                    string query = @"
-                            INSERT INTO QuizResult (ApplicantId, Score, TotalQuestions, Passed, SubmittedOn)
-                            VALUES (@ApplicantId, @Score, @TotalQuestions, @Passed, @SubmittedOn)";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@ApplicantId", _applicantId);
-                        cmd.Parameters.AddWithValue("@Score", score);
-                        cmd.Parameters.AddWithValue("@TotalQuestions", _questions.Count);
-                        cmd.Parameters.AddWithValue("@Passed", passed);
-                        cmd.Parameters.AddWithValue("@SubmittedOn", submittedOn);
-
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                // ✅ Update TextBlock with marks
-                MarksBox.Text = $"Your Score: {score}/{_questions.Count}";
-
-                MessageBox.Show(
-                    $"Quiz completed! Score: {score}/{_questions.Count}",
-                    "Quiz Result",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
-
-                // ✅ Use the existing MainWindow, do NOT create a new one
-                Window parentWindow = Window.GetWindow(this);
-                if (parentWindow != null)
-                {
-                    var contentControl = parentWindow.FindName("MainContent") as ContentControl;
-                    parentWindow.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error saving quiz result: " + ex.Message,
-                                "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void UpdateNavigation()
-        {
-            BackBtn.IsEnabled = _currentIndex > 0;
-            bool isLast = (_currentIndex == _questions.Count - 1);
-            NextBtn.Visibility = isLast ? Visibility.Collapsed : Visibility.Visible;
-            SubmitBtn.Visibility = isLast ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private void SaveResultToDatabase(object sender, RoutedEventArgs e)
-        {
-            SaveCurrentSelection();
-
-            int score = 0;
-            for (int i = 0; i < _questions.Count; i++)
-            {
-                int selected;
-                if (_answers.TryGetValue(i, out selected))
                 {
                     if (selected == _questions[i].CorrectOptionIndex)
                         score++;
@@ -244,11 +219,9 @@ namespace IMS.Views
                 using (SqlConnection conn = new SqlConnection(DbChecker.ConnectionString))
                 {
                     conn.Open();
-
                     string query = @"
-                INSERT INTO QuizResult (ApplicantId, Score, TotalQuestions, Passed, SubmittedOn)
-                VALUES (@ApplicantId, @Score, @TotalQuestions, @Passed, @SubmittedOn)";
-
+                        INSERT INTO QuizResult (ApplicantId, Score, TotalQuestions, Passed, SubmittedOn)
+                        VALUES (@ApplicantId, @Score, @TotalQuestions, @Passed, @SubmittedOn)";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@ApplicantId", _applicantId);
@@ -256,42 +229,39 @@ namespace IMS.Views
                         cmd.Parameters.AddWithValue("@TotalQuestions", _questions.Count);
                         cmd.Parameters.AddWithValue("@Passed", passed);
                         cmd.Parameters.AddWithValue("@SubmittedOn", submittedOn);
-
                         cmd.ExecuteNonQuery();
                     }
                 }
 
+                MarksBox.Text = $"Your Score: {score}/{_questions.Count}";
                 MessageBox.Show(
-                    string.Format("Quiz completed! Score: {0}/{1}", score, _questions.Count),
+                    autoSubmit
+                        ? $"Time’s up! Quiz auto-submitted.\nScore: {score}/{_questions.Count}"
+                        : $"Quiz completed!\nScore: {score}/{_questions.Count}",
                     "Quiz Result",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                 );
+
+                Window parentWindow = Window.GetWindow(this);
+                if (parentWindow != null)
+                {
+                    parentWindow.Close();
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error saving quiz result: " + ex.Message,
-                                "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
-            {
-                object ctrl = parentWindow.FindName("MainContentArea");
-                if (ctrl != null && ctrl is ContentControl)
-                {
-                    parentWindow.Close();
-                }
-                else
-                {
-                    this.Visibility = Visibility.Collapsed;
-                }
-            }
-            else
-            {
-                this.Visibility = Visibility.Collapsed;
+                    "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        private void UpdateNavigation()
+        {
+            BackBtn.IsEnabled = _currentIndex > 0;
+            bool isLast = (_currentIndex == _questions.Count - 1);
+            NextBtn.Visibility = isLast ? Visibility.Collapsed : Visibility.Visible;
+            SubmitBtn.Visibility = isLast ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 }

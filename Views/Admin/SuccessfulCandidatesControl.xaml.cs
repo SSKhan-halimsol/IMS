@@ -18,7 +18,16 @@ namespace IMS.Views.Admin
         {
             if (sender is DataGrid grid && grid.SelectedItem is Applicant selectedApplicant)
             {
-                _dashboard.ShowApplicantDetails(selectedApplicant);
+                using (var db = new IMS.Data.IMSDbContext())
+                {
+                    // Fetch the complete applicant record from database using its Id
+                    var fullApplicant = db.Applicants.Find(selectedApplicant.Id);
+
+                    if (fullApplicant != null)
+                    {
+                        _dashboard.ShowApplicantDetails(fullApplicant);
+                    }
+                }
             }
         }
     }

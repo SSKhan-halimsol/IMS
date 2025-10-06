@@ -18,5 +18,12 @@ namespace IMS.Views
                 vm.Password = ((System.Windows.Controls.PasswordBox)sender).Password;
             }
         }
+
+        private void back_click(object sender , RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+            this.Close();
+        }
     }
 }

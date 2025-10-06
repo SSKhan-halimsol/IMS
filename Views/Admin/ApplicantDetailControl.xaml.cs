@@ -18,7 +18,7 @@ namespace IMS.Views.Admin
             InitializeComponent();
             _applicant = applicant;
             _dashboard = dashboard;
-            DataContext = applicant;
+            DataContext = _applicant;
         }
 
         private void SaveComment_Click(object sender, RoutedEventArgs e)
@@ -119,7 +119,6 @@ namespace IMS.Views.Admin
                         {
                             MessageBox.Show($"This applicant is already marked as {dbApplicant.Status}.",
                                             "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                            DisableStatusButtons();
                             return;
                         }
 
@@ -133,8 +132,6 @@ namespace IMS.Views.Admin
                         MessageBox.Show($"Applicant marked as {status}.",
                                         "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                        // Disable after marking
-                        DisableStatusButtons();
                     }
                     else
                     {
@@ -150,11 +147,6 @@ namespace IMS.Views.Admin
             }
         }
 
-        private void DisableStatusButtons()
-        {
-            AcceptedBtn.IsEnabled = false;
-            RejectedBtn.IsEnabled = false;
-        }
 
         private void BackToApplicants_Click(object sender, RoutedEventArgs e)
         {
@@ -166,7 +158,7 @@ namespace IMS.Views.Admin
         {
             if (_applicant.Status == "Accepted" || _applicant.Status == "Rejected")
             {
-                DisableStatusButtons();
+                
             }
         }
     }

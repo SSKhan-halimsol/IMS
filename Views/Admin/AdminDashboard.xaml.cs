@@ -31,6 +31,12 @@ namespace IMS.Views.Admin
             MainContent.Content = new SuccessfulCandidatesControl(this);
         }
 
+        private void BtnDesignations_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveButton(BtnDesignations);
+            MainContent.Content = new DesignationAdminControl();
+        }
+
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Logged out successfully!", "Logout", MessageBoxButton.OK, MessageBoxImage.Information);

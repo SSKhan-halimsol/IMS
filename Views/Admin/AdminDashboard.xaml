@@ -35,13 +35,17 @@
 
                 <Button x:Name="BtnSelected" Content="🏆 Successful Applicants" Width="200" Height="40" Margin="0,4" Click="Btnsucc_Click"
                         Background="Transparent" Foreground="White" Style="{StaticResource NavButtonStyle}"/>
+
+                <Button x:Name="BtnDesignations" Content="📊 Designations" Width="200" Height="40" Margin="0,4" Click="BtnDesignations_Click"
+                        Background="Transparent" Foreground="White" Style="{StaticResource NavButtonStyle}"/>
             </StackPanel>
 
             <!-- Logout Button at very bottom -->
-            <Button x:Name="BtnLogout" Grid.Row="1" Content="🚪 Logout" Height="40" Width="160"
-                    HorizontalAlignment="Center" Margin="0,20,0,20"
-                    Background="Red" Foreground="White" FontWeight="Bold" 
-                    Click="BtnLogout_Click"/>
+            <Button x:Name="BtnLogout" Grid.Row="1" Height="50" Width="60" Background="Transparent" BorderThickness="0"
+                    HorizontalAlignment="Center" Margin="0,20,0,20" FontWeight="Bold" 
+                    Click="BtnLogout_Click">
+                <Image Source="C:\Users\Shahbaz\source\repos\IMS\Photos\check-out.png" Height="45" Width="60"></Image>
+            </Button>
         </Grid>
 
         <!-- Main Content Area -->

@@ -1,5 +1,5 @@
 ﻿using IMS.Data;
-using IMS.Helpers;        // make sure this exists and contains RelayCommand
+using IMS.Helpers;
 using IMS.Models;
 using System;
 using System.Collections.Generic;
@@ -18,25 +18,88 @@ namespace IMS.ViewModels
         private readonly ObservableCollection<Applicant> _allApplicants = new ObservableCollection<Applicant>();
         private readonly ObservableCollection<Applicant> _pagedApplicants = new ObservableCollection<Applicant>();
 
-        public ICollectionView ApplicantsView { get; }
-
-        private string _searchText = "";
-        public string SearchText
+        // FILTER PROPERTIES
+        private string _searchName;
+        public string SearchName
         {
-            get => _searchText;
+            get => _searchName;
             set
             {
-                if (_searchText == value) return;
-                _searchText = value;
-                OnPropertyChanged();
-                UpdatePagedApplicants();   // re-apply search when text changes
+                if (_searchName != value)
+                {
+                    _searchName = value;
+                    OnPropertyChanged();
+                    UpdatePagedApplicants();
+                }
             }
         }
 
-        // Pagination fields
-        private int _currentPage = 1;
-        private int _itemsPerPage = 10;
+        private string _searchCNIC;
+        public string SearchCNIC
+        {
+            get => _searchCNIC;
+            set
+            {
+                if (_searchCNIC != value)
+                {
+                    _searchCNIC = value;
+                    OnPropertyChanged();
+                    UpdatePagedApplicants();
+                }
+            }
+        }
 
+        private string _searchEmail;
+        public string SearchEmail
+        {
+            get => _searchEmail;
+            set
+            {
+                if (_searchEmail != value)
+                {
+                    _searchEmail = value;
+                    OnPropertyChanged();
+                    UpdatePagedApplicants();
+                }
+            }
+        }
+
+        private string _searchContact;
+        public string SearchContact
+        {
+            get => _searchContact;
+            set
+            {
+                if (_searchContact != value)
+                {
+                    _searchContact = value;
+                    OnPropertyChanged();
+                    UpdatePagedApplicants();
+                }
+            }
+        }
+
+        private DateTime? _searchDate;
+        public DateTime? SearchDate
+        {
+            get => _searchDate;
+            set
+            {
+                if (_searchDate != value)
+                {
+                    _searchDate = value;
+                    OnPropertyChanged();
+                    UpdatePagedApplicants();
+                }
+            }
+        }
+
+        public ICommand ClearFiltersCommand { get; }
+
+        public ICollectionView ApplicantsView { get; }
+
+        private int _currentPage = 1;
+        private readonly int _itemsPerPage = 10;
         public int CurrentPage
         {
             get => _currentPage;
@@ -52,8 +115,9 @@ namespace IMS.ViewModels
         }
 
         public int TotalPages => (int)Math.Ceiling((double)FilteredApplicants.Count() / _itemsPerPage);
+        public bool CanGoNext => CurrentPage < TotalPages;
+        public bool CanGoPrev => CurrentPage > 1;
 
-        // Commands
         public ICommand RefreshCommand { get; }
         public ICommand DeleteApplicantCommand { get; }
         public ICommand NextPageCommand { get; }
@@ -64,30 +128,26 @@ namespace IMS.ViewModels
             ApplicantsView = CollectionViewSource.GetDefaultView(_pagedApplicants);
 
             RefreshCommand = new RelayCommand(async _ => await SafeLoadApplicantsAsync());
-
-            DeleteApplicantCommand = new RelayCommand(async param =>
-            {
-                var applicant = param as Applicant;
-                if (applicant == null) return;
-                await SafeDeleteApplicantAsync(applicant);
-            });
-
             NextPageCommand = new RelayCommand(_ => NextPage(), _ => CanGoNext);
             PrevPageCommand = new RelayCommand(_ => PrevPage(), _ => CanGoPrev);
+            DeleteApplicantCommand = new RelayCommand(async param =>
+            {
+                if (param is Applicant applicant)
+                    await SafeDeleteApplicantAsync(applicant);
+            });
+
+            ClearFiltersCommand = new RelayCommand(_ => ClearFilters());
 
             _ = SafeLoadApplicantsAsync();
         }
 
         public IEnumerable<Applicant> FilteredApplicants =>
             _allApplicants.Where(a =>
-                string.IsNullOrWhiteSpace(SearchText) ||
-                (a.ApplicantName?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                (a.FatherName?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                (a.CNIC?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                (a.Email?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                (a.ContactNo?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                (a.ExperienceDuration?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                (a.AppliedFor?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0));
+                (string.IsNullOrWhiteSpace(SearchName) || a.ApplicantName?.IndexOf(SearchName, StringComparison.OrdinalIgnoreCase) >= 0) &&
+                (string.IsNullOrWhiteSpace(SearchCNIC) || a.CNIC?.IndexOf(SearchCNIC, StringComparison.OrdinalIgnoreCase) >= 0) &&
+                (string.IsNullOrWhiteSpace(SearchEmail) || a.Email?.IndexOf(SearchEmail, StringComparison.OrdinalIgnoreCase) >= 0) &&
+                (string.IsNullOrWhiteSpace(SearchContact) || a.ContactNo?.IndexOf(SearchContact, StringComparison.OrdinalIgnoreCase) >= 0)
+            );
 
         private void UpdatePagedApplicants()
         {
@@ -97,21 +157,36 @@ namespace IMS.ViewModels
                 .Skip((_currentPage - 1) * _itemsPerPage)
                 .Take(_itemsPerPage);
 
-            foreach (var a in items)
-                _pagedApplicants.Add(a);
+            foreach (var applicant in items)
+                _pagedApplicants.Add(applicant);
 
             OnPropertyChanged(nameof(TotalPages));
             OnPropertyChanged(nameof(CanGoNext));
             OnPropertyChanged(nameof(CanGoPrev));
         }
 
+        private void ClearFilters()
+        {
+            SearchName = string.Empty;
+            SearchCNIC = string.Empty;
+            SearchEmail = string.Empty;
+            SearchContact = string.Empty;
+            SearchDate = null;
+
+            CurrentPage = 1;
+            UpdatePagedApplicants();
+        }
+
+        // ✅ LOAD FROM DATABASE
         private async Task SafeLoadApplicantsAsync()
         {
             try
             {
                 var list = await ApplicantRepository.GetAllAsync();
+
                 _allApplicants.Clear();
-                foreach (var a in list) _allApplicants.Add(a);
+                foreach (var a in list)
+                    _allApplicants.Add(a);
 
                 CurrentPage = 1;
                 UpdatePagedApplicants();
@@ -119,59 +194,49 @@ namespace IMS.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading applicants: {ex.Message}",
-                                "Error",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
+        // ✅ DELETE APPLICANT
         private async Task SafeDeleteApplicantAsync(Applicant applicant)
         {
             if (applicant == null) return;
 
-            var result = MessageBox.Show(
-                $"Are you sure you want to delete {applicant.ApplicantName}?",
+            var confirm = MessageBox.Show(
+                $"Are you sure you want to delete '{applicant.ApplicantName}'?",
                 "Confirm Delete",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
-            if (result != MessageBoxResult.Yes) return;
+            if (confirm != MessageBoxResult.Yes) return;
 
             try
             {
                 bool deleted = await ApplicantRepository.DeleteAsync(applicant.Id);
-
                 if (deleted)
                 {
                     _allApplicants.Remove(applicant);
                     UpdatePagedApplicants();
-
-                    MessageBox.Show("Applicant deleted successfully.",
-                                    "Deleted",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Information);
+                    MessageBox.Show("Applicant deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
                     MessageBox.Show("Delete failed. Applicant may have dependent records (QuizResult).",
-                                    "Error",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Error);
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error deleting applicant: {ex.Message}",
-                                "SQL Error",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
+                MessageBox.Show($"Error deleting applicant: {ex.Message}", "SQL Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        // Pagination helpers
-        public bool CanGoNext => CurrentPage < TotalPages;
-        public bool CanGoPrev => CurrentPage > 1;
-
+        // ✅ PAGINATION CONTROLS
         private void NextPage()
         {
             if (CanGoNext)
