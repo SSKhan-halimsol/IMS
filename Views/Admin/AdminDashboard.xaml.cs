@@ -34,7 +34,7 @@ namespace IMS.Views.Admin
         private void BtnDesignations_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(BtnDesignations);
-            MainContent.Content = new DesignationAdminControl();
+            //MainContent.Content = new DesignationAdminControl();
         }
 
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
