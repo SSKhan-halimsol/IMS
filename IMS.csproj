@@ -96,11 +96,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Data\ApplicantRepository.cs" />
+    <Compile Include="Data\DesignationRepository.cs" />
     <Compile Include="Data\IMSDbContext.cs" />
     <Compile Include="Helpers\EqualityConverter.cs" />
     <Compile Include="Helpers\QuizLoader.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Models\Admin.cs" />
+    <Compile Include="Models\Designation.cs" />
     <Compile Include="Models\Interviewer.cs" />
     <Compile Include="Converters\StepToVisibilityConverter.cs" />
     <Compile Include="Models\QuizResult.cs" />
@@ -126,6 +128,9 @@
     </Compile>
     <Compile Include="Views\Admin\ApplicantsAdminControl.xaml.cs">
       <DependentUpon>ApplicantsAdminControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Admin\DesignationControl.xaml.cs">
+      <DependentUpon>DesignationControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Admin\HomeControl.xaml.cs">
       <DependentUpon>HomeControl.xaml</DependentUpon>
@@ -154,6 +159,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Admin\ApplicantsAdminControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Admin\DesignationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,74 @@
+﻿<UserControl x:Class="IMS.Views.Admin.DesignationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#0b0b0b">
+    <Border Background="#111" CornerRadius="10" Margin="20" Padding="20" BorderBrush="#2d2d2d" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Manage Designations"
+                       FontSize="24" FontWeight="Bold"
+                       Foreground="#92d400"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+            <!-- Add New Designation -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                <TextBox x:Name="DesignationInput"
+                         Width="250" Height="32"
+                         Margin="0,0,10,0"
+                         Foreground="White"
+                         Background="#1c1c1c"
+                         BorderBrush="#92d400"
+                         BorderThickness="1"
+                         Padding="5"/>
+                <Button Content="Add" Width="100" Height="32" Background="#92d400" Foreground="Black" FontWeight="Bold"
+                        Click="AddDesignation_Click"/>
+            </StackPanel>
+
+            <!-- DataGrid -->
+            <DataGrid x:Name="DesignationGrid"
+                      Grid.Row="2"
+                      AutoGenerateColumns="False"
+                      Background="Black"
+                      Foreground="White"
+                      BorderThickness="0"
+                      RowBackground="#222"
+                      AlternatingRowBackground="#1a1a1a"
+                      HeadersVisibility="Column"
+                      CanUserAddRows="False"
+                      FontSize="14">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Designation" Binding="{Binding Title}" Width="*"/>
+                    <DataGridTextColumn Header="Applicants" Binding="{Binding ApplicantCount}" Width="150"/>
+                    <DataGridTemplateColumn Header="Action" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Click="DeleteDesignation_Click" Tag="{Binding Id}" Width="70" Height="25" Background="Transparent" BorderThickness="0">
+                                    <Image Source="/Photos/delete.png" Width="16" Height="16"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#111"/>
+                        <!-- dark header background -->
+                        <Setter Property="Foreground" Value="White"/>
+                        <!-- white text -->
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="BorderBrush" Value="#333"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+            </DataGrid>
+        </Grid>
+    </Border>
+</UserControl>

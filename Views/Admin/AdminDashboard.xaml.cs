@@ -1,5 +1,6 @@
 ﻿using IMS.Models;
 using IMS.Views.Admin;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -33,9 +34,19 @@ namespace IMS.Views.Admin
 
         private void BtnDesignations_Click(object sender, RoutedEventArgs e)
         {
-            SetActiveButton(BtnDesignations);
-            //MainContent.Content = new DesignationAdminControl();
+            try
+            {
+                var designationControl = new DesignationControl();
+
+                MainContent.Content = designationControl;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading Designations module: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
 
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {

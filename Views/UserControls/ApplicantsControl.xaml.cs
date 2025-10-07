@@ -19,6 +19,12 @@ namespace IMS.Views
         {
             InitializeComponent();
             this.Loaded += ApplicantsControl_Loaded;
+            LoadDesignations();
+        }
+        private async void LoadDesignations()
+        {
+            var list = await DesignationRepository.GetAllAsync();
+            DesignationBox.ItemsSource = list;
         }
         private void ApplicantsControl_Loaded(object sender, RoutedEventArgs e)
         {
