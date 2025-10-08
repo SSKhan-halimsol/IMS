@@ -6,7 +6,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="900"
-             Background="#1E1E1E">
+             Background="#0D0D0D">
 
     <UserControl.Resources>
         <!-- ComboBox data arrays -->
@@ -45,144 +45,305 @@
             <sys:String>Angular developer</sys:String>
             <sys:String>PHP developer</sys:String>
         </x:Array>
+
+        <!-- Enhanced Styles -->
+        <Style x:Key="SectionCard" TargetType="Border">
+            <Setter Property="Background" Value="#1A1A1A"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="25"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#CCCCCC"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,12,0,6"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
     </UserControl.Resources>
 
-    <Grid Margin="20">
+    <Grid Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock x:Name="StepTitle"
-                       FontSize="24" FontWeight="Bold"
-                       Foreground="{StaticResource AccentBrush}"
-                       Text="Step 1 of 3 - Basic Information"/>
-            <Separator Margin="0,10,0,0" Background="{StaticResource AccentBrush}" Height="2"/>
-        </StackPanel>
+        <!-- Header with Progress -->
+        <Border Grid.Row="0" Background="#111111" Padding="30,20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Title -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Border Background="#9AFF00" CornerRadius="8" Width="6" Height="40" Margin="0,0,15,0"/>
+                    <StackPanel>
+                        <TextBlock x:Name="StepTitle"
+                                   FontSize="24" 
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   Text="Step 1 of 3 - Basic Information"/>
+                        <TextBlock Text="Please fill in your personal details"
+                                   FontSize="13"
+                                   Foreground="#888888"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
 
         <!-- Steps Container -->
         <ScrollViewer Grid.Row="1" x:Name="MainScrollViewer"
                       VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto"
-                      Margin="0">
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                <!-- Panels for steps -->
-                <StackPanel x:Name="Step1Panel" Visibility="Visible" Margin="10" HorizontalAlignment="Stretch">
-                    <TextBlock Text="Personal Information" FontSize="18" FontWeight="SemiBold"
-                               Foreground="{StaticResource InputForegroundBrush}" Margin="0,0,0,8"/>
+                      HorizontalScrollBarVisibility="Disabled"
+                      Background="#0D0D0D"
+                      Padding="30,20">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" MaxWidth="800">
+                <!-- Step 1 Panel -->
+                <StackPanel x:Name="Step1Panel" Visibility="Visible">
+                    <Border Style="{StaticResource SectionCard}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <Border Background="#9AFF00" Width="40" Height="40" CornerRadius="20" Margin="0,0,12,0">
+                                    <TextBlock Text="👤" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Personal Information" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                    <TextBlock Text="Tell us about yourself" Foreground="#888888" FontSize="12"/>
+                                </StackPanel>
+                            </StackPanel>
 
-                    <TextBlock Text="Full Name *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <TextBox x:Name="FullNameBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="15"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="S/D/W of *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <TextBox x:Name="FatherNameBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Full Name *" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="FullNameBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                    <TextBlock Text="CNIC *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <TextBox x:Name="CnicBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="CNIC *" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="CnicBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                    <TextBlock Text="Father's Profession *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <TextBox x:Name="FatherProfessionBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Contact No. *" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="PhoneBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                    <TextBlock Text="Contact No. *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <TextBox x:Name="PhoneBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Marital Status *" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox x:Name="MaritalStatusBox" ItemsSource="{StaticResource MaritalStatusOptions}" SelectedIndex="0"/>
 
-                    <TextBlock Text="Date *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <DatePicker x:Name="DateBox" Style="{StaticResource RoundedDatePickerStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Applied For (Designation) *" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox x:Name="DesignationBox" ItemsSource="{StaticResource AppliedForOptions}" 
+                                              SelectedIndex="0" DisplayMemberPath="Title" SelectedValuePath="Title"/>
+                                </StackPanel>
 
-                    <TextBlock Text="Marital Status *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <ComboBox x:Name="MaritalStatusBox" ItemsSource="{StaticResource MaritalStatusOptions}" SelectedIndex="0" HorizontalAlignment="Stretch"/>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="S/D/W of *" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="FatherNameBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                    <TextBlock Text="Age *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <TextBox x:Name="AgeBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Father's Profession *" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="FatherProfessionBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                    <TextBlock Text="Applied For (Designation) *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <ComboBox x:Name="DesignationBox" ItemsSource="{StaticResource AppliedForOptions}" SelectedIndex="0" HorizontalAlignment="Stretch" DisplayMemberPath="Title" SelectedValuePath="Title"/>
+                                    <TextBlock Text="Date *" Style="{StaticResource FieldLabel}"/>
+                                    <DatePicker x:Name="DateBox" Style="{StaticResource RoundedDatePickerStyle}"/>
 
-                    <TextBlock Text="Address *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <TextBox x:Name="AddressBox" Style="{StaticResource RoundedTextBoxStyle}"
-                             Height="60" AcceptsReturn="True" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Age *" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="AgeBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                    <TextBlock Text="Email *" Foreground="{StaticResource InputForegroundBrush}" Margin="0,4,0,2"/>
-                    <TextBox x:Name="EmailBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Email *" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="EmailBox" Style="{StaticResource RoundedTextBoxStyle}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="Address *" Style="{StaticResource FieldLabel}"/>
+                            <TextBox x:Name="AddressBox" Style="{StaticResource RoundedTextBoxStyle}"
+                                     Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
 
-                <!-- Step 2 -->
-                <StackPanel x:Name="Step2Panel" Visibility="Collapsed" Margin="10" HorizontalAlignment="Stretch">
-                    <TextBlock Text="Technical Information" FontSize="16" FontWeight="SemiBold"
-                               Foreground="{StaticResource InputForegroundBrush}" Margin="0,0,0,8"/>
+                <!-- Step 2 Panel -->
+                <StackPanel x:Name="Step2Panel" Visibility="Collapsed">
+                    <Border Style="{StaticResource SectionCard}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <Border Background="#9AFF00" Width="40" Height="40" CornerRadius="20" Margin="0,0,12,0">
+                                    <TextBlock Text="💻" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Technical Information" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                    <TextBlock Text="Share your technical expertise" Foreground="#888888" FontSize="12"/>
+                                </StackPanel>
+                            </StackPanel>
 
-                    <TextBlock Text="Why are you leaving your current position?" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="LeavingReasonBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="15"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="How do you rate yourself in OOP" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <ComboBox x:Name="OopRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0" HorizontalAlignment="Stretch"/>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="How do you rate yourself in OOP?" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox x:Name="OopRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0"/>
 
-                    <TextBlock Text="How do you rate yourself in SQL" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <ComboBox x:Name="SqlRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="How do you rate yourself in SQL?" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox x:Name="SqlRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0"/>
 
-                    <TextBlock Text="How do you rate yourself in UI" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <ComboBox x:Name="UiRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="How do you rate yourself in UI?" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox x:Name="UiRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0"/>
 
-                    <TextBlock Text="Are you currently employed?" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <ComboBox x:Name="EmployedBox" ItemsSource="{StaticResource YesNoOptions}" SelectedIndex="0" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Are you currently employed?" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox x:Name="EmployedBox" ItemsSource="{StaticResource YesNoOptions}" SelectedIndex="0"/>
 
-                    <TextBlock Text="Your current company (if any)" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="CompanyBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Your current company (if any)" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="CompanyBox" Style="{StaticResource RoundedTextBoxStyle}"/>
+                                </StackPanel>
 
-                    <TextBlock Text="Why do you want this job?" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="JobReasonBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Why are you leaving your current position?" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="LeavingReasonBox" Style="{StaticResource RoundedTextBoxStyle}" 
+                                             Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
 
-                    <TextBlock Text="How many times you see the watch in a day?" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="WatchCountBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Why do you want this job?" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="JobReasonBox" Style="{StaticResource RoundedTextBoxStyle}" 
+                                             Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
 
-                    <TextBlock Text="Tell about your professional challenges and how you resolved them" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="ChallengesBox" Style="{StaticResource RoundedTextBoxStyle}" Height="60" AcceptsReturn="True" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="How many times you see the watch in a day?" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="WatchCountBox" Style="{StaticResource RoundedTextBoxStyle}"/>
+                                </StackPanel>
+                            </Grid>
 
-                    <TextBlock Text="Tell about your strengths" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="StrengthsBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                            <TextBlock Text="Tell about your professional challenges and how you resolved them" Style="{StaticResource FieldLabel}"/>
+                            <TextBox x:Name="ChallengesBox" Style="{StaticResource RoundedTextBoxStyle}" 
+                                     Height="100" AcceptsReturn="True" TextWrapping="Wrap"/>
 
-                    <TextBlock Text="Tell about your weaknesses" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="WeaknessesBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="15"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Tell about your strengths" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="StrengthsBox" Style="{StaticResource RoundedTextBoxStyle}" 
+                                             Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Tell about your weaknesses" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="WeaknessesBox" Style="{StaticResource RoundedTextBoxStyle}" 
+                                             Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
 
-                <!-- Step 3 -->
-                <StackPanel x:Name="Step3Panel" Visibility="Collapsed" Margin="10" HorizontalAlignment="Stretch">
-                    <TextBlock Text="Work Experience" FontSize="16" FontWeight="SemiBold"
-                               Foreground="{StaticResource InputForegroundBrush}" Margin="0,0,0,8"/>
+                <!-- Step 3 Panel -->
+                <StackPanel x:Name="Step3Panel" Visibility="Collapsed">
+                    <Border Style="{StaticResource SectionCard}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <Border Background="#9AFF00" Width="40" Height="40" CornerRadius="20" Margin="0,0,12,0">
+                                    <TextBlock Text="💼" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Work Experience" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                    <TextBlock Text="Your professional background" Foreground="#888888" FontSize="12"/>
+                                </StackPanel>
+                            </StackPanel>
 
-                    <TextBlock Text="Which framework have you worked with?" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="FrameworkBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="15"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Your experience duration" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <ComboBox x:Name="ExperienceBox" ItemsSource="{StaticResource ExperienceRating}" SelectedIndex="0" HorizontalAlignment="Stretch"/>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Which framework have you worked with?" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="FrameworkBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                    <TextBlock Text="Your professional goals for next 5 years" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="GoalsBox" Style="{StaticResource RoundedTextBoxStyle}" Height="60" AcceptsReturn="True" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Your experience duration" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox x:Name="ExperienceBox" ItemsSource="{StaticResource ExperienceRating}" SelectedIndex="0"/>
 
-                    <TextBlock Text="Your current salary" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="SalaryBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Your current salary" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="SalaryBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                    <TextBlock Text="Education from which institute?" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="EducationBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="How much willing do you have for this job?" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox x:Name="WillingnessBox" ItemsSource="{StaticResource WillingnessOptions}" SelectedIndex="0"/>
+                                </StackPanel>
 
-                    <TextBlock Text="Your CGPA?" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <TextBox x:Name="CgpaBox" Style="{StaticResource RoundedTextBoxStyle}" HorizontalAlignment="Stretch"/>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Education from which institute?" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="EducationBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                    <TextBlock Text="How much willing do you have for this job?" Foreground="{StaticResource InputForegroundBrush}"/>
-                    <ComboBox x:Name="WillingnessBox" ItemsSource="{StaticResource WillingnessOptions}" SelectedIndex="0" HorizontalAlignment="Stretch"/>
+                                    <TextBlock Text="Your CGPA?" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="CgpaBox" Style="{StaticResource RoundedTextBoxStyle}"/>
+
+                                    <TextBlock Text="Your professional goals for next 5 years" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="GoalsBox" Style="{StaticResource RoundedTextBoxStyle}" 
+                                             Height="120" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-        <Button Content="Back Home" Height="30" Grid.Row="2" HorizontalAlignment="Left" Width="90" Background="#92d400" Foreground="Black"
-                FontWeight="Bold" FontSize="15" Click="Button_Click"></Button>
-        <!-- Navigation buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button x:Name="BackBtn" Content="← Back" Click="BackBtn_Click" Style="{StaticResource SecondaryButtonStyle}" Visibility="Collapsed"/>
-            <Button x:Name="NextBtn" Content="Next →" Click="NextBtn_Click" Style="{StaticResource AccentButtonStyle}"/>
-            <Button x:Name="SubmitBtn" Content="Submit" Click="SubmitBtn_Click" Style="{StaticResource AccentButtonStyle}" Visibility="Collapsed"/>
-        </StackPanel>
+
+        <!-- Footer Navigation -->
+        <Border Grid.Row="2" Background="#111111" Padding="30,20" BorderBrush="#222222" BorderThickness="0,1,0,0">
+            <Grid>
+                <Button Content="🏠 Back Home" 
+                        Height="44" 
+                        HorizontalAlignment="Left" 
+                        Width="140" 
+                        Background="#2A2A2A"
+                        Foreground="White"
+                        BorderThickness="1"
+                        BorderBrush="#444444"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Click="Button_Click"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="BackBtn" 
+                            Content="← Back" 
+                            Click="BackBtn_Click" 
+                            Style="{StaticResource SecondaryButtonStyle}" 
+                            Visibility="Collapsed"
+                            Width="120"
+                            Height="44"/>
+                    <Button x:Name="NextBtn" 
+                            Content="Next →" 
+                            Click="NextBtn_Click" 
+                            Style="{StaticResource AccentButtonStyle}"
+                            Width="120"
+                            Height="44"/>
+                    <Button x:Name="SubmitBtn" 
+                            Content="✓ Submit" 
+                            Click="SubmitBtn_Click" 
+                            Style="{StaticResource AccentButtonStyle}" 
+                            Visibility="Collapsed"
+                            Width="140"
+                            Height="44"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
