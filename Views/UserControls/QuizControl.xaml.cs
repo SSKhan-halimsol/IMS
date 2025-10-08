@@ -44,7 +44,7 @@ namespace IMS.Views
 
             _answers = new Dictionary<int, int>();
             _currentIndex = 0;
-            WelcomeText.Text = $"Welcome!! Ready to take your {designation} quiz?";
+            WelcomeText.Text = $"Welcome!! Ready to take your quiz?";
 
             if (_questions.Count == 0)
             {

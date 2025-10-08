@@ -18,8 +18,8 @@ namespace IMS.Helpers
             {
                 new Question { Text = "Which SQL command is used to retrieve data?",
                     Options = new[] { "SELECT", "INSERT", "DELETE", "UPDATE" }, CorrectOptionIndex = 0 },
-                new Question { Text = "Which keyword is used to define a class in C#?",
-                    Options = new[] { "def", "function", "class", "struct" }, CorrectOptionIndex = 2 },
+                new Question { Text = "Which language not commonly uses OOP?",
+                    Options = new[] { "C++", "Java", "C#", "C" }, CorrectOptionIndex = 3 },
                 new Question { Text = "Which OOP principle allows method overriding?",
                     Options = new[] { "Encapsulation", "Polymorphism", "Abstraction", "Inheritance" }, CorrectOptionIndex = 1 },
                 new Question { Text = "Which design pattern ensures only one instance of a class?",

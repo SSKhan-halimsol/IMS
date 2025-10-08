@@ -106,10 +106,6 @@
     <Compile Include="Models\Interviewer.cs" />
     <Compile Include="Converters\StepToVisibilityConverter.cs" />
     <Compile Include="Models\QuizResult.cs" />
-    <Compile Include="Services\ApplicantService.cs" />
-    <Compile Include="Services\AuthService.cs" />
-    <Compile Include="Services\InterviewService.cs" />
-    <Compile Include="Services\ReportingService.cs" />
     <Compile Include="ViewModels\ApplicantsAdminViewModel.cs" />
     <Compile Include="ViewModels\ApplicantsViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
@@ -184,7 +180,6 @@
     </Compile>
     <Compile Include="Data\AppDbContext.cs" />
     <Compile Include="Data\DbInitializer.cs" />
-    <Compile Include="Data\Migrations.cs" />
     <Compile Include="Helpers\CConfig.cs" />
     <Compile Include="Helpers\DbChecker.cs" />
     <Compile Include="Helpers\DbScriptsRunner.cs" />
