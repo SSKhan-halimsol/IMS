@@ -18,6 +18,8 @@ namespace IMS.ViewModels
         private readonly ObservableCollection<Applicant> _allApplicants = new ObservableCollection<Applicant>();
         private readonly ObservableCollection<Applicant> _pagedApplicants = new ObservableCollection<Applicant>();
 
+        public ICollectionView ApplicantsView { get; }
+
         // FILTER PROPERTIES
         private string _searchName;
         public string SearchName
@@ -29,6 +31,7 @@ namespace IMS.ViewModels
                 {
                     _searchName = value;
                     OnPropertyChanged();
+                    CurrentPage = 1; // Reset to first page when filtering
                     UpdatePagedApplicants();
                 }
             }
@@ -44,6 +47,7 @@ namespace IMS.ViewModels
                 {
                     _searchCNIC = value;
                     OnPropertyChanged();
+                    CurrentPage = 1;
                     UpdatePagedApplicants();
                 }
             }
@@ -59,6 +63,7 @@ namespace IMS.ViewModels
                 {
                     _searchEmail = value;
                     OnPropertyChanged();
+                    CurrentPage = 1;
                     UpdatePagedApplicants();
                 }
             }
@@ -74,6 +79,7 @@ namespace IMS.ViewModels
                 {
                     _searchContact = value;
                     OnPropertyChanged();
+                    CurrentPage = 1;
                     UpdatePagedApplicants();
                 }
             }
@@ -89,6 +95,7 @@ namespace IMS.ViewModels
                 {
                     _searchDate = value;
                     OnPropertyChanged();
+                    CurrentPage = 1;
                     UpdatePagedApplicants();
                 }
             }
@@ -96,10 +103,10 @@ namespace IMS.ViewModels
 
         public ICommand ClearFiltersCommand { get; }
 
-        public ICollectionView ApplicantsView { get; }
-
+        // PAGINATION PROPERTIES
         private int _currentPage = 1;
         private readonly int _itemsPerPage = 10;
+
         public int CurrentPage
         {
             get => _currentPage;
@@ -109,12 +116,29 @@ namespace IMS.ViewModels
                 {
                     _currentPage = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(PageInfo));
                     UpdatePagedApplicants();
                 }
             }
         }
 
-        public int TotalPages => (int)Math.Ceiling((double)FilteredApplicants.Count() / _itemsPerPage);
+        private int _totalPages;
+        public int TotalPages
+        {
+            get => _totalPages;
+            set
+            {
+                if (_totalPages != value)
+                {
+                    _totalPages = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(PageInfo));
+                }
+            }
+        }
+
+        public string PageInfo => $"Page {CurrentPage} of {TotalPages}";
+
         public bool CanGoNext => CurrentPage < TotalPages;
         public bool CanGoPrev => CurrentPage > 1;
 
@@ -141,26 +165,51 @@ namespace IMS.ViewModels
             _ = SafeLoadApplicantsAsync();
         }
 
-        public IEnumerable<Applicant> FilteredApplicants =>
-            _allApplicants.Where(a =>
-                (string.IsNullOrWhiteSpace(SearchName) || a.ApplicantName?.IndexOf(SearchName, StringComparison.OrdinalIgnoreCase) >= 0) &&
-                (string.IsNullOrWhiteSpace(SearchCNIC) || a.CNIC?.IndexOf(SearchCNIC, StringComparison.OrdinalIgnoreCase) >= 0) &&
-                (string.IsNullOrWhiteSpace(SearchEmail) || a.Email?.IndexOf(SearchEmail, StringComparison.OrdinalIgnoreCase) >= 0) &&
-                (string.IsNullOrWhiteSpace(SearchContact) || a.ContactNo?.IndexOf(SearchContact, StringComparison.OrdinalIgnoreCase) >= 0)
-            );
+        private IEnumerable<Applicant> FilteredApplicants
+        {
+            get
+            {
+                return _allApplicants.Where(a =>
+                    (string.IsNullOrWhiteSpace(SearchName) ||
+                     (a.ApplicantName != null && a.ApplicantName.IndexOf(SearchName, StringComparison.OrdinalIgnoreCase) >= 0)) &&
+
+                    (string.IsNullOrWhiteSpace(SearchCNIC) ||
+                     (a.CNIC != null && a.CNIC.IndexOf(SearchCNIC, StringComparison.OrdinalIgnoreCase) >= 0)) &&
+
+                    (string.IsNullOrWhiteSpace(SearchEmail) ||
+                     (a.Email != null && a.Email.IndexOf(SearchEmail, StringComparison.OrdinalIgnoreCase) >= 0)) &&
+
+                    (string.IsNullOrWhiteSpace(SearchContact) ||
+                     (a.ContactNo != null && a.ContactNo.IndexOf(SearchContact, StringComparison.OrdinalIgnoreCase) >= 0)) &&
+
+                    (!SearchDate.HasValue ||
+                     (a.Date.HasValue && a.Date.Value.Date == SearchDate.Value.Date))
+                );
+            }
+        }
 
         private void UpdatePagedApplicants()
         {
+            var filtered = FilteredApplicants.ToList();
+
+            // Calculate total pages
+            TotalPages = filtered.Count == 0 ? 1 : (int)Math.Ceiling((double)filtered.Count / _itemsPerPage);
+
+            // Ensure current page is valid
+            if (CurrentPage > TotalPages)
+                CurrentPage = TotalPages;
+
+            // Clear and populate paged items
             _pagedApplicants.Clear();
 
-            var items = FilteredApplicants
-                .Skip((_currentPage - 1) * _itemsPerPage)
+            var items = filtered
+                .Skip((CurrentPage - 1) * _itemsPerPage)
                 .Take(_itemsPerPage);
 
             foreach (var applicant in items)
                 _pagedApplicants.Add(applicant);
 
-            OnPropertyChanged(nameof(TotalPages));
+            // Notify UI of changes
             OnPropertyChanged(nameof(CanGoNext));
             OnPropertyChanged(nameof(CanGoPrev));
         }
@@ -219,6 +268,14 @@ namespace IMS.ViewModels
                 if (deleted)
                 {
                     _allApplicants.Remove(applicant);
+
+                    // If current page becomes empty after delete, go to previous page
+                    var filteredCount = FilteredApplicants.Count();
+                    if (filteredCount > 0 && (CurrentPage - 1) * _itemsPerPage >= filteredCount)
+                    {
+                        CurrentPage = Math.Max(1, CurrentPage - 1);
+                    }
+
                     UpdatePagedApplicants();
                     MessageBox.Show("Applicant deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }

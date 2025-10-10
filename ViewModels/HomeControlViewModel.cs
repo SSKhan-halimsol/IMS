@@ -11,11 +11,11 @@ namespace IMS.ViewModels
 {
     public class HomeControlViewModel : BaseViewModel
     {
-        private PlotModel _lineChartModel;
-        public PlotModel LineChartModel
+        private PlotModel _barChartModel;
+        public PlotModel BarChartModel
         {
-            get { return _lineChartModel; }
-            set { _lineChartModel = value; OnPropertyChanged("LineChartModel"); }
+            get { return _barChartModel; }
+            set { _barChartModel = value; OnPropertyChanged(nameof(BarChartModel)); }
         }
 
         private PlotModel _pieChartModel;
@@ -46,7 +46,7 @@ namespace IMS.ViewModels
                 {
                     BuildApplicantsBarChart(applicants);
                     BuildPieChart(applicants);
-                    BuildApplicantVolumeChart(applicants); // new chart
+                    BuildApplicantVolumeChart(applicants);
                 }
                 else
                 {
@@ -64,12 +64,32 @@ namespace IMS.ViewModels
             using (var context = new IMSDbContext())
             {
                 applicants = context.Applicants.ToList();
-                var model = new PlotModel { Title = "" };
+                var model = new PlotModel
+                {
+                    Title = "",
+                    Background = OxyColors.Transparent,
+                    PlotAreaBorderColor = OxyColor.FromRgb(30, 41, 59),
+                    TextColor = OxyColor.FromRgb(203, 213, 225),
+                    TitleColor = OxyColors.White,
+                    PlotAreaBorderThickness = new OxyThickness(1)
+                };
 
                 var today = DateTime.Today;
                 var designations = new[] { "QA Engineer", ".NET Developer", "Angular Developer", "PHP Developer" };
 
-                var designationAxis = new CategoryAxis { Position = AxisPosition.Left, Title = "Designation" };
+                var designationAxis = new CategoryAxis
+                {
+                    Position = AxisPosition.Left,
+                    Title = "Designation",
+                    TextColor = OxyColor.FromRgb(148, 163, 184),
+                    TitleColor = OxyColor.FromRgb(203, 213, 225),
+                    AxislineColor = OxyColor.FromRgb(51, 65, 85),
+                    TicklineColor = OxyColor.FromRgb(51, 65, 85),
+                    MajorGridlineStyle = LineStyle.Dot,
+                    MajorGridlineColor = OxyColor.FromRgb(30, 41, 59),
+                    FontSize = 11
+                };
+
                 foreach (var d in designations)
                     designationAxis.Labels.Add(d);
                 model.Axes.Add(designationAxis);
@@ -81,14 +101,23 @@ namespace IMS.ViewModels
                     Minimum = 0,
                     MajorStep = 1,
                     MinorStep = 1,
-                    AbsoluteMinimum = 0
+                    AbsoluteMinimum = 0,
+                    TextColor = OxyColor.FromRgb(148, 163, 184),
+                    TitleColor = OxyColor.FromRgb(203, 213, 225),
+                    AxislineColor = OxyColor.FromRgb(51, 65, 85),
+                    TicklineColor = OxyColor.FromRgb(51, 65, 85),
+                    MajorGridlineStyle = LineStyle.Dot,
+                    MajorGridlineColor = OxyColor.FromRgb(30, 41, 59),
+                    FontSize = 11
                 };
                 model.Axes.Add(countAxis);
 
                 var barSeries = new BarSeries
                 {
                     Title = "Applicants Today",
-                    FillColor = OxyColors.LimeGreen,
+                    FillColor = OxyColor.FromRgb(16, 185, 129), // Green gradient color
+                    StrokeColor = OxyColor.FromRgb(5, 150, 105),
+                    StrokeThickness = 2
                 };
 
                 foreach (var designation in designations)
@@ -102,13 +131,20 @@ namespace IMS.ViewModels
                 }
 
                 model.Series.Add(barSeries);
-                LineChartModel = model;
+                BarChartModel = model;
             }
         }
 
         private void BuildPieChart(IEnumerable<Applicant> applicants)
         {
-            var model = new PlotModel { Title = "" };
+            var model = new PlotModel
+            {
+                Title = "",
+                Background = OxyColors.Transparent,
+                TextColor = OxyColor.FromRgb(203, 213, 225),
+                TitleColor = OxyColors.White,
+                PlotAreaBorderThickness = new OxyThickness(0)
+            };
 
             var today = DateTime.Today;
             var startMonth = today.AddMonths(-6);
@@ -123,17 +159,40 @@ namespace IMS.ViewModels
                     Count = g.Count()
                 });
 
-            var pieSeries = new PieSeries
+            // Modern color palette for pie chart
+            var colors = new[]
             {
-                StrokeThickness = 1.0,
-                InsideLabelPosition = 0.8,
-                AngleSpan = 360,
-                StartAngle = 0
+                OxyColor.FromRgb(16, 185, 129),   // Green
+                OxyColor.FromRgb(59, 130, 246),   // Blue
+                OxyColor.FromRgb(139, 92, 246),   // Purple
+                OxyColor.FromRgb(245, 158, 11),   // Orange
+                OxyColor.FromRgb(239, 68, 68),    // Red
+                OxyColor.FromRgb(236, 72, 153)    // Pink
             };
 
+            var pieSeries = new PieSeries
+            {
+                StrokeThickness = 3.0,
+                Stroke = OxyColor.FromRgb(20, 31, 58),
+                InsideLabelPosition = 0.7,
+                AngleSpan = 360,
+                StartAngle = 0,
+                InsideLabelColor = OxyColors.White,
+                OutsideLabelFormat = "{1}: {2:0}",
+                TextColor = OxyColor.FromRgb(203, 213, 225),
+                FontSize = 12,
+                FontWeight = FontWeights.Bold
+            };
+
+            int colorIndex = 0;
             foreach (var g in grouped)
             {
-                pieSeries.Slices.Add(new PieSlice(g.Month, g.Count));
+                pieSeries.Slices.Add(new PieSlice(g.Month, g.Count)
+                {
+                    Fill = colors[colorIndex % colors.Length],
+                    IsExploded = false
+                });
+                colorIndex++;
             }
 
             model.Series.Add(pieSeries);
@@ -142,35 +201,80 @@ namespace IMS.ViewModels
 
         private void BuildApplicantVolumeChart(IEnumerable<Applicant> applicants)
         {
-            var model = new PlotModel { Title = "" };
-
-            // Jobs on Y-axis (horizontal bars)
-            var jobAxis = new CategoryAxis { Position = AxisPosition.Left, Title = "Jobs" };
-            var grouped = applicants.GroupBy(a => a.AppliedFor).ToList();
-            foreach (var g in grouped)
-                jobAxis.Labels.Add(g.Key);
-            model.Axes.Add(jobAxis);
-
-            // Applicants on X-axis
-            var applicantAxis = new LinearAxis
+            using (var context = new IMSDbContext())
             {
-                Position = AxisPosition.Bottom,
-                Title = "Total Applicants",
-                Minimum = 0
-            };
-            model.Axes.Add(applicantAxis);
+                applicants = context.Applicants.ToList();
 
-            // Horizontal bars
-            var barSeries = new BarSeries
-            {
-                ItemsSource = grouped.Select(g => new BarItem { Value = g.Count() }).ToList(),
-                FillColor = OxyColors.LimeGreen,
-                StrokeColor = OxyColors.Black,
-                StrokeThickness = 1
-            };
+                var model = new PlotModel
+                {
+                    Title = "",
+                    Background = OxyColors.Transparent,
+                    PlotAreaBorderColor = OxyColor.FromRgb(30, 41, 59),
+                    TextColor = OxyColor.FromRgb(203, 213, 225),
+                    TitleColor = OxyColors.White,
+                    PlotAreaBorderThickness = new OxyThickness(1)
+                };
 
-            model.Series.Add(barSeries);
-            ApplicantVolumeChartModel = model;
+                var designations = new[] { "QA Engineer", ".NET Developer", "Angular Developer", "PHP Developer" };
+
+                // Y-axis (Designation)
+                var designationAxis = new CategoryAxis
+                {
+                    Position = AxisPosition.Left,
+                    Title = "Designation",
+                    TextColor = OxyColor.FromRgb(148, 163, 184),
+                    TitleColor = OxyColor.FromRgb(203, 213, 225),
+                    AxislineColor = OxyColor.FromRgb(51, 65, 85),
+                    TicklineColor = OxyColor.FromRgb(51, 65, 85),
+                    MajorGridlineStyle = LineStyle.Dot,
+                    MajorGridlineColor = OxyColor.FromRgb(30, 41, 59),
+                    FontSize = 11
+                };
+
+                foreach (var d in designations)
+                    designationAxis.Labels.Add(d);
+                model.Axes.Add(designationAxis);
+
+                // X-axis (Count)
+                var countAxis = new LinearAxis
+                {
+                    Position = AxisPosition.Bottom,
+                    Title = "Total Applicants",
+                    Minimum = 0,
+                    MajorStep = 1,
+                    MinorStep = 1,
+                    AbsoluteMinimum = 0,
+                    TextColor = OxyColor.FromRgb(148, 163, 184),
+                    TitleColor = OxyColor.FromRgb(203, 213, 225),
+                    AxislineColor = OxyColor.FromRgb(51, 65, 85),
+                    TicklineColor = OxyColor.FromRgb(51, 65, 85),
+                    MajorGridlineStyle = LineStyle.Dot,
+                    MajorGridlineColor = OxyColor.FromRgb(30, 41, 59),
+                    FontSize = 11
+                };
+                model.Axes.Add(countAxis);
+
+                // Create bar series with gradient effect
+                var barSeries = new BarSeries
+                {
+                    Title = "Applicants",
+                    FillColor = OxyColor.FromRgb(16, 185, 129),
+                    StrokeColor = OxyColor.FromRgb(5, 150, 105),
+                    StrokeThickness = 2
+                };
+
+                // Count total applicants for each designation
+                foreach (var designation in designations)
+                {
+                    int count = applicants.Count(a =>
+                        string.Equals(a.AppliedFor, designation, StringComparison.OrdinalIgnoreCase));
+
+                    barSeries.Items.Add(new BarItem(count));
+                }
+
+                model.Series.Add(barSeries);
+                ApplicantVolumeChartModel = model;
+            }
         }
 
         public void RefreshCharts()

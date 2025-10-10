@@ -2,54 +2,522 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
-             Background="Black">
+             Background="#0A0E27">
 
-    <Border Background="#0b0b0b" Margin="12" CornerRadius="12" Padding="20">
-        <Grid>
+    <UserControl.Resources>
+        <!-- Gradient Brushes -->
+        <LinearGradientBrush x:Key="GreenGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#10B981" Offset="0"/>
+            <GradientStop Color="#059669" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="BlueGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#3B82F6" Offset="0"/>
+            <GradientStop Color="#2563EB" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="PurpleGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#8B5CF6" Offset="0"/>
+            <GradientStop Color="#7C3AED" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="OrangeGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#F59E0B" Offset="0"/>
+            <GradientStop Color="#D97706" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="CardBackground" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#1A1F3A" Offset="0"/>
+            <GradientStop Color="#141829" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Enhanced Card Style with Animation -->
+        <Style x:Key="DashboardCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="BorderBrush" Value="#2D3250"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" BlurRadius="30" ShadowDepth="0" Opacity="0.7"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)"
+                                           To="1.02" Duration="0:0:0.2">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleY)"
+                                           To="1.02" Duration="0:0:0.2">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)"
+                                           To="1" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleY)"
+                                           To="1" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Enhanced Stat Card Style -->
+        <Style x:Key="StatCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="BorderBrush" Value="#2D3250"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" BlurRadius="25" ShadowDepth="0" Opacity="0.6"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform Y="0"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(TranslateTransform.Y)"
+                                           To="-5" Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <ThicknessAnimation Storyboard.TargetProperty="BorderThickness"
+                                              To="1.5" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(TranslateTransform.Y)"
+                                           To="0" Duration="0:0:0.3"/>
+                            <ThicknessAnimation Storyboard.TargetProperty="BorderThickness"
+                                              To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Card Title Style -->
+        <Style x:Key="CardTitle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <!-- Stat Value Style with Glow Effect -->
+        <Style x:Key="StatValue" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="36"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="White" BlurRadius="10" ShadowDepth="0" Opacity="0.3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Stat Label Style -->
+        <Style x:Key="StatLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+
+        <!-- Icon Border Style -->
+        <Style x:Key="IconBorder" TargetType="Border">
+            <Setter Property="Width" Value="48"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Margin" Value="0,0,12,0"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="0" Opacity="0.5"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="24">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Header -->
-            <TextBlock Text="Welcome to Interview Management System"
-                       Grid.Row="0"
-                       HorizontalAlignment="Center"
-                       FontWeight="Bold"
-                       FontSize="28"
-                       Foreground="#92d400"
-                       Margin="0,10,0,20"/>
+            <!-- Animated Background Gradient -->
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#0A0E27" Offset="0"/>
+                    <GradientStop Color="#1A1F3A" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
 
-            <!-- Main Dashboard -->
-            <Grid Grid.Row="1">
+            <!-- Header Section -->
+            <Grid Grid.Row="0" Margin="0,0,0,30">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Dashboard Overview"
+                               FontWeight="Bold"
+                               FontSize="38"
+                               Foreground="White">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#A6E22E" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock Text="Interview Management System Analytics"
+                               FontSize="15"
+                               Foreground="#64748B"
+                               FontWeight="Medium"
+                               Margin="0,6,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                    <Border Background="{StaticResource GreenGradient}" 
+                            CornerRadius="25" 
+                            Padding="16,8" 
+                            Margin="0,0,12,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="10" Height="10" Fill="White" Margin="0,0,8,0">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect Color="White" BlurRadius="10" ShadowDepth="0"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <TextBlock Text="System Active" 
+                                       Foreground="White" 
+                                       FontSize="13" 
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#1E293B" 
+                            CornerRadius="10" 
+                            Padding="14,8"
+                            BorderBrush="#334155"
+                            BorderThickness="1">
+                        <TextBlock x:Name="CurrentDateText" 
+                                   Text="{Binding Date, StringFormat='dd MMM yyyy'}" 
+                                   Foreground="#CBD5E1" 
+                                   FontSize="13"
+                                   FontWeight="SemiBold"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- Stats Row with Gradient Cards -->
+            <Grid Grid.Row="1" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- Total Applicants Card -->
+                <Border Grid.Column="0" Style="{StaticResource StatCard}">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource IconBorder}" 
+                                    Background="{StaticResource GreenGradient}">
+                                <TextBlock Text="👥" 
+                                           FontSize="24" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Total Applicants" 
+                                           Style="{StaticResource StatLabel}"/>
+                                <TextBlock x:Name="TotalApplicantsText" 
+                                           Text="0" 
+                                           Style="{StaticResource StatValue}" 
+                                           FontSize="32"
+                                           Foreground="#10B981"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Decorative corner accent -->
+                        <Path Data="M 0,0 L 30,0 L 0,30 Z" 
+                              Fill="{StaticResource GreenGradient}" 
+                              Opacity="0.2"
+                              HorizontalAlignment="Right" 
+                              VerticalAlignment="Top"/>
+                    </Grid>
+                </Border>
+
+                <!-- Today's Applicants Card -->
+                <Border Grid.Column="1" Style="{StaticResource StatCard}">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource IconBorder}" 
+                                    Background="{StaticResource BlueGradient}">
+                                <TextBlock Text="📅" 
+                                           FontSize="24" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Today" 
+                                           Style="{StaticResource StatLabel}"/>
+                                <TextBlock x:Name="TodayApplicantsText" 
+                                           Text="0" 
+                                           Style="{StaticResource StatValue}" 
+                                           FontSize="32"
+                                           Foreground="#3B82F6"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Path Data="M 0,0 L 30,0 L 0,30 Z" 
+                              Fill="{StaticResource BlueGradient}" 
+                              Opacity="0.2"
+                              HorizontalAlignment="Right" 
+                              VerticalAlignment="Top"/>
+                    </Grid>
+                </Border>
+
+                <!-- This Month Card -->
+                <Border Grid.Column="2" Style="{StaticResource StatCard}">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource IconBorder}" 
+                                    Background="{StaticResource PurpleGradient}">
+                                <TextBlock Text="📊" 
+                                           FontSize="24" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="This Month" 
+                                           Style="{StaticResource StatLabel}"/>
+                                <TextBlock x:Name="MonthApplicantsText" 
+                                           Text="0" 
+                                           Style="{StaticResource StatValue}" 
+                                           FontSize="32"
+                                           Foreground="#8B5CF6"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Path Data="M 0,0 L 30,0 L 0,30 Z" 
+                              Fill="{StaticResource PurpleGradient}" 
+                              Opacity="0.2"
+                              HorizontalAlignment="Right" 
+                              VerticalAlignment="Top"/>
+                    </Grid>
+                </Border>
+
+                <!-- Pending Reviews Card -->
+                <Border Grid.Column="3" Style="{StaticResource StatCard}">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource IconBorder}" 
+                                    Background="{StaticResource OrangeGradient}">
+                                <TextBlock Text="⏳" 
+                                           FontSize="24" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Pending" 
+                                           Style="{StaticResource StatLabel}"/>
+                                <TextBlock x:Name="PendingReviewsText" 
+                                           Text="0" 
+                                           Style="{StaticResource StatValue}" 
+                                           FontSize="32"
+                                           Foreground="#F59E0B"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Path Data="M 0,0 L 30,0 L 0,30 Z" 
+                              Fill="{StaticResource OrangeGradient}" 
+                              Opacity="0.2"
+                              HorizontalAlignment="Right" 
+                              VerticalAlignment="Top"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Charts Row -->
+            <Grid Grid.Row="2" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
                 <!-- Line Chart Card -->
-                <Border Background="#1a1a1a" CornerRadius="12" Padding="15">
+                <Border Grid.Column="0" Style="{StaticResource DashboardCard}">
                     <StackPanel>
-                        <TextBlock Text="Applicants Today" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#92d400" Margin="0,0,0,10"/>
-                        <oxy:PlotView Model="{Binding LineChartModel}" VerticalAlignment="Stretch" Height="200" />
+                        <Grid Margin="0,0,0,20">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="5" 
+                                        Height="28" 
+                                        CornerRadius="3" 
+                                        Margin="0,0,12,0"
+                                        Background="{StaticResource GreenGradient}"/>
+                                <StackPanel>
+                                    <TextBlock Text="Applicants Today" 
+                                               Style="{StaticResource CardTitle}" 
+                                               Margin="0"
+                                               FontSize="20"/>
+                                    <TextBlock Text="Real-time application trends" 
+                                               Foreground="#64748B" 
+                                               FontSize="12"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Background="#0F172A" 
+                                CornerRadius="8" 
+                                Padding="10"
+                                BorderBrush="#1E293B"
+                                BorderThickness="1">
+                            <oxy:PlotView Model="{Binding BarChartModel}"
+                                          Height="280" 
+                                          Background="Transparent"/>
+                        </Border>
                     </StackPanel>
                 </Border>
 
                 <!-- Pie Chart Card -->
-                <Border Background="#1a1a1a" CornerRadius="12" Padding="15" Grid.Column="1">
+                <Border Grid.Column="1" Style="{StaticResource DashboardCard}">
                     <StackPanel>
-                        <TextBlock Text="Applicants in Last 6 Months" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#92d400" Margin="0,0,0,10"/>
-                        <oxy:PlotView Model="{Binding PieChartModel}" VerticalAlignment="Stretch" Height="200" />
+                        <Grid Margin="0,0,0,20">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="5" 
+                                        Height="28" 
+                                        CornerRadius="3" 
+                                        Margin="0,0,12,0"
+                                        Background="{StaticResource PurpleGradient}"/>
+                                <StackPanel>
+                                    <TextBlock Text="Last 6 Months" 
+                                               Style="{StaticResource CardTitle}" 
+                                               Margin="0"
+                                               FontSize="20"/>
+                                    <TextBlock Text="Application distribution" 
+                                               Foreground="#64748B" 
+                                               FontSize="12"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Background="#0F172A" 
+                                CornerRadius="8" 
+                                Padding="10"
+                                BorderBrush="#1E293B"
+                                BorderThickness="1">
+                            <oxy:PlotView Model="{Binding PieChartModel}" 
+                                          Height="280" 
+                                          Background="Transparent"/>
+                        </Border>
                     </StackPanel>
                 </Border>
             </Grid>
-            <Border Background="#1a1a1a" CornerRadius="12" Padding="15" Grid.Row="2" Grid.ColumnSpan="2">
-                <StackPanel>
-                    <TextBlock Text="Applicants Volume" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#92d400" Margin="0,0,0,10"/>
-                    <oxy:PlotView Model="{Binding ApplicantVolumeChartModel}" VerticalAlignment="Stretch" Height="230" />
-                </StackPanel>
-            </Border>
+
+            <!-- Volume Chart -->
+            <Grid Grid.Row="3">
+                <Border Style="{StaticResource DashboardCard}">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <Border Width="5" 
+                                        Height="28" 
+                                        CornerRadius="3" 
+                                        Margin="0,0,12,0"
+                                        Background="{StaticResource BlueGradient}"/>
+                                <StackPanel>
+                                    <TextBlock Text="Applicants Volume" 
+                                               Style="{StaticResource CardTitle}" 
+                                               Margin="0"
+                                               FontSize="20"/>
+                                    <TextBlock Text="Historical application trends over time" 
+                                               Foreground="#64748B" 
+                                               FontSize="12"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Border Grid.Column="1" 
+                                    Background="{StaticResource GreenGradient}" 
+                                    CornerRadius="8" 
+                                    Padding="12,6">
+                                <TextBlock Text="Yearly" 
+                                           Foreground="White" 
+                                           FontSize="12" 
+                                           FontWeight="Bold"/>
+                            </Border>
+                        </Grid>
+
+                        <Border Background="#0F172A" 
+                                CornerRadius="8" 
+                                Padding="10"
+                                BorderBrush="#1E293B"
+                                BorderThickness="1">
+                            <oxy:PlotView Model="{Binding ApplicantVolumeChartModel}" 
+                                          Height="300" 
+                                          Background="Transparent"/>
+                        </Border>
+
+                        <!-- Enhanced Legend -->
+                        <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Center"
+                                    Margin="0,16,0,0">
+                            <Border Background="{StaticResource GreenGradient}"
+                                    Width="16" 
+                                    Height="16" 
+                                    CornerRadius="4"
+                                    Margin="0,0,10,0">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#10B981" BlurRadius="8" ShadowDepth="0" Opacity="0.6"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBlock Text="Applications Received" 
+                                       Foreground="#CBD5E1" 
+                                       FontSize="13"
+                                       FontWeight="Medium"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Grid>
-    </Border>
+    </ScrollViewer>
 </UserControl>

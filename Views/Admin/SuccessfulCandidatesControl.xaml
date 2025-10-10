@@ -2,62 +2,481 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:IMS.ViewModels"
-             Background="Black">
+             Background="#0A0E27">
 
     <UserControl.DataContext>
         <vm:SuccessfulCandidatesViewModel />
     </UserControl.DataContext>
-    
-    <Grid Margin="12">
+
+    <UserControl.Resources>
+        <!-- Gradient Brushes -->
+        <LinearGradientBrush x:Key="GreenGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#10B981" Offset="0"/>
+            <GradientStop Color="#059669" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="CardBackground" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#1A1F3A" Offset="0"/>
+            <GradientStop Color="#141829" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- TextBox Style -->
+        <Style x:Key="FilterTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="CaretBrush" Value="#10B981"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                        Margin="0"
+                                        VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#10B981"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#10B981"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Button Styles -->
+        <Style x:Key="ClearButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#EF4444"/>
+            <Setter Property="BorderBrush" Value="#EF4444"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="16,10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#EF4444" Offset="0"/>
+                                            <GradientStop Color="#DC2626" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="Transparent"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PaginationButton" TargetType="Button">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="20,10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource GreenGradient}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="Transparent"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#0F172A"/>
+                                <Setter Property="Foreground" Value="#475569"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#1E293B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="24">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
-        <TextBlock Text="Successful Applicants"
-                   FontSize="18" Grid.Row="0"
-                   FontWeight="Bold"
-                   Foreground="#92d400"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,12"/>
 
-        <DataGrid ItemsSource="{Binding AcceptedApplicants}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True" Grid.Row="1"
-                  AlternatingRowBackground="#222"
-                  RowBackground="#111"
-                  Foreground="Black"
-                  Background="Black"
-                  MouseDoubleClick="ApplicantsGrid_MouseDoubleClick"
-                  HeadersVisibility="Column">
+        <!-- Header Section -->
+        <Grid Grid.Row="0" Margin="0,0,0,30">
+            <StackPanel Orientation="Horizontal">
+                <Border Width="6" 
+                        Height="44" 
+                        Background="{StaticResource GreenGradient}" 
+                        CornerRadius="3"
+                        Margin="0,0,16,0"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Successful Candidates"
+                               FontSize="32"
+                               FontWeight="Bold"
+                               Foreground="White">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#10B981" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock Text="View and manage accepted applicants"
+                               FontSize="14"
+                               Foreground="#64748B"
+                               Margin="0,6,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="2*"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding ApplicantName}" Width="3*"/>
-                <DataGridTextColumn Header="CNIC" Binding="{Binding CNIC}" Width="3*"/>
-                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="3*"/>
-                <DataGridTextColumn Header="Contact" Binding="{Binding ContactNo}" Width="3*"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="3*"/>
-            </DataGrid.Columns>
-            <DataGrid.ColumnHeaderStyle>
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="Background" Value="#333"/>
-                    <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="BorderBrush" Value="Gray"/>
-                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                </Style>
-            </DataGrid.ColumnHeaderStyle>
+        <!-- Filter Section -->
+        <Border Grid.Row="1" 
+                Background="{StaticResource CardBackground}" 
+                CornerRadius="12" 
+                Padding="24" 
+                Margin="0,0,0,20"
+                BorderBrush="#2D3250"
+                BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" BlurRadius="25" ShadowDepth="0" Opacity="0.6"/>
+            </Border.Effect>
 
-            <!-- Row Styling -->
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="FontSize" Value="14"/>
-                    <Setter Property="Padding" Value="6,2"/>
-                </Style>
-            </DataGrid.CellStyle>
-        </DataGrid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Filter Label -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                    <Border Background="{StaticResource GreenGradient}" 
+                            Width="4" 
+                            Height="24" 
+                            CornerRadius="2" 
+                            Margin="0,0,12,0"/>
+                    <TextBlock Text="Filter Candidates" 
+                               Foreground="White" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Filter Fields -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Name -->
+                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                        <TextBlock Text="Name" 
+                                   Foreground="#94A3B8" 
+                                   FontSize="12" 
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,8"/>
+                        <TextBox Text="{Binding SearchName, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource FilterTextBox}"
+                                 Height="40"/>
+                    </StackPanel>
+
+                    <!-- CNIC -->
+                    <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                        <TextBlock Text="CNIC" 
+                                   Foreground="#94A3B8" 
+                                   FontSize="12" 
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,8"/>
+                        <TextBox Text="{Binding SearchCNIC, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource FilterTextBox}"
+                                 Height="40"/>
+                    </StackPanel>
+
+                    <!-- Email -->
+                    <StackPanel Grid.Column="2" Margin="0,0,12,0">
+                        <TextBlock Text="Email" 
+                                   Foreground="#94A3B8" 
+                                   FontSize="12" 
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,8"/>
+                        <TextBox Text="{Binding SearchEmail, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource FilterTextBox}"
+                                 Height="40"/>
+                    </StackPanel>
+
+                    <!-- Contact -->
+                    <StackPanel Grid.Column="3" Margin="0,0,12,0">
+                        <TextBlock Text="Contact" 
+                                   Foreground="#94A3B8" 
+                                   FontSize="12" 
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,8"/>
+                        <TextBox Text="{Binding SearchContact, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource FilterTextBox}"
+                                 Height="40"/>
+                    </StackPanel>
+
+                    <!-- Clear Button -->
+                    <Button Grid.Column="4"
+                            Content="🗑️  Clear"
+                            Command="{Binding ClearFiltersCommand}"
+                            VerticalAlignment="Bottom"
+                            Height="40"
+                            Width="120"
+                            Style="{StaticResource ClearButtonStyle}"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- DataGrid Section -->
+        <Border Grid.Row="2" 
+                Background="#0F172A" 
+                CornerRadius="12"
+                BorderBrush="#1E293B"
+                BorderThickness="1"
+                Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" BlurRadius="25" ShadowDepth="0" Opacity="0.6"/>
+            </Border.Effect>
+
+            <DataGrid x:Name="ApplicantsGrid"
+                      ItemsSource="{Binding PagedApplicants}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      Background="Transparent"
+                      BorderThickness="0"
+                      GridLinesVisibility="None"
+                      HeadersVisibility="Column"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      RowHeight="54"
+                      FontSize="13"
+                      MouseDoubleClick="ApplicantsGrid_MouseDoubleClick">
+
+                <!-- Column Headers -->
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#0A0E27"/>
+                        <Setter Property="Foreground" Value="#94A3B8"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontSize" Value="12"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        <Setter Property="Padding" Value="16,14"/>
+                        <Setter Property="BorderBrush" Value="#10B981"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,2"/>
+                        <Setter Property="Height" Value="48"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+
+                <!-- Row Style -->
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="#1E293B"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Style.Triggers>
+                            <Trigger Property="AlternationIndex" Value="1">
+                                <Setter Property="Background" Value="#1A2332"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#10B98120"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#10B98130"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+
+                <!-- Cell Style -->
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Padding" Value="16,0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border Background="{TemplateBinding Background}"
+                                            BorderThickness="0"
+                                            Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
+
+                <!-- Columns -->
+                <DataGrid.Columns>
+                    <!-- ID Column -->
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="70">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#64748B"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <!-- Name Column -->
+                    <DataGridTextColumn Header="Name" Binding="{Binding ApplicantName}" Width="2*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="Medium"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <!-- CNIC Column -->
+                    <DataGridTextColumn Header="CNIC" Binding="{Binding CNIC}" Width="1.5*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#CBD5E1"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <!-- Email Column -->
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2.5*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#CBD5E1"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <!-- Contact Column -->
+                    <DataGridTextColumn Header="Contact" Binding="{Binding ContactNo}" Width="1.5*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#CBD5E1"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <!-- Status Column with Badge -->
+                    <DataGridTemplateColumn Header="Status" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource GreenGradient}"
+                                        CornerRadius="6"
+                                        Padding="10,5"
+                                        HorizontalAlignment="Center">
+                                    <TextBlock Text="✓ Accepted" 
+                                               Foreground="White" 
+                                               FontSize="11"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Pagination Section -->
+        <Border Grid.Row="3" 
+                Background="{StaticResource CardBackground}" 
+                CornerRadius="12" 
+                Padding="20"
+                BorderBrush="#2D3250"
+                BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Previous Button -->
+                <Button Grid.Column="0"
+                        Content="← Previous"
+                        Command="{Binding PrevPageCommand}"
+                        HorizontalAlignment="Left"
+                        Width="140"
+                        Height="44"
+                        Style="{StaticResource PaginationButton}"/>
+
+                <!-- Page Info -->
+                <Border Grid.Column="1" 
+                        Background="#1E293B" 
+                        CornerRadius="8" 
+                        Padding="24,12"
+                        BorderBrush="#334155"
+                        BorderThickness="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="📄" 
+                                   FontSize="16"
+                                   Margin="0,0,10,0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding PageInfo}" 
+                                   Foreground="White" 
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Next Button -->
+                <Button Grid.Column="2"
+                        Content="Next →"
+                        Command="{Binding NextPageCommand}"
+                        HorizontalAlignment="Right"
+                        Width="140"
+                        Height="44"
+                        Style="{StaticResource PaginationButton}"/>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
