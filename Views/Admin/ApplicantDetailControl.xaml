@@ -172,7 +172,7 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8">
-                            <ScrollViewer x:Name="PART_ContentHost" Margin="0"/>
+                            <ScrollViewer x:Name="PART_ContentHost" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -325,73 +325,33 @@
                                     <StackPanel>
                                         <!-- Header -->
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                                            <Border Background="{StaticResource PurpleGradient}" 
-                                            Width="50" 
-                                            Height="50" 
-                                            CornerRadius="25" 
-                                            Margin="0,0,16,0">
-                                                <TextBlock Text="📄" 
-                                       FontSize="28" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center"/>
+                                            <Border Background="{StaticResource PurpleGradient}" Width="50" Height="50" CornerRadius="25" Margin="0,0,16,0">
+                                                <TextBlock Text="📄"  FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="Applicant Resume" 
-                                       Foreground="White"
-                                       FontSize="18" 
-                                       FontWeight="Bold"
-                                       Margin="0,0,0,4"/>
-                                                <TextBlock Text="View or download the submitted resume" 
-                                       Foreground="#94A3B8" 
-                                       FontSize="12"/>
+                                                <TextBlock Text="Applicant Resume" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,0,0,4"/>
+                                                <TextBlock Text="View or download the submitted resume" Foreground="#94A3B8" FontSize="12"/>
                                             </StackPanel>
                                         </StackPanel>
 
                                         <!-- Divider -->
-                                        <Border Height="1" 
-                                        Background="#334155" 
-                                        Margin="0,0,0,20"/>
+                                        <Border Height="1" Background="#334155" Margin="0,0,0,20"/>
 
                                         <!-- Resume Info -->
-                                        <TextBlock Text="Resume File" 
-                                           Foreground="#94A3B8"
-                                           FontSize="12"
-                                           FontWeight="SemiBold"
-                                           Margin="0,0,0,8"/>
+                                        <TextBlock Text="Resume File" Foreground="#94A3B8" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
 
                                         <TextBlock x:Name="ResumeFileNameText" Foreground="LightGray" FontStyle="Italic"/>
 
                                         <!-- Action Buttons -->
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                            <Button x:Name="ViewResumeBtn"
-                                                Click="ViewResume_Click"
-                                                Background="{StaticResource BlueGradient}"
-                                                Foreground="White"
-                                                FontWeight="SemiBold"
-                                                FontSize="13"
-                                                Height="44"
-                                                Width="160"
-                                                Margin="0,0,12,0"
-                                                BorderThickness="0"
-                                                Cursor="Hand"
-                                                Style="{StaticResource ActionButton}">
+                                            <Button x:Name="ViewResumeBtn" Click="ViewResume_Click" Background="{StaticResource BlueGradient}" Foreground="White" FontWeight="SemiBold"  FontSize="13" Height="44" Width="160" Margin="0,0,12,0" BorderThickness="0" Cursor="Hand" Style="{StaticResource ActionButton}">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="👁 " FontSize="16" VerticalAlignment="Center"/>
                                                     <TextBlock Text="View Resume" VerticalAlignment="Center"/>
                                                 </StackPanel>
                                             </Button>
 
-                                            <Button x:Name="DownloadResumeBtn"
-                                                Click="DownloadResume_Click"
-                                                Background="{StaticResource GreenGradient}"
-                                                Foreground="White"
-                                                FontWeight="SemiBold"
-                                                FontSize="13"
-                                                Height="44"
-                                                Width="180"
-                                                BorderThickness="0"
-                                                Cursor="Hand"
-                                                Style="{StaticResource ActionButton}">
+                                            <Button x:Name="DownloadResumeBtn" Click="DownloadResume_Click" Background="{StaticResource GreenGradient}" Foreground="White" FontWeight="SemiBold" FontSize="13" Height="44" Width="180" BorderThickness="0" Cursor="Hand" Style="{StaticResource ActionButton}">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="⬇ " FontSize="16" VerticalAlignment="Center"/>
                                                     <TextBlock Text="Download Resume" VerticalAlignment="Center"/>
@@ -400,12 +360,7 @@
                                         </StackPanel>
 
                                         <!-- Error Message -->
-                                        <TextBlock x:Name="ResumeErrorText"
-                               Text="Resume file not found or path is invalid"
-                               Foreground="#EF4444"
-                               FontSize="12"
-                               Margin="0,16,0,0"
-                               Visibility="Collapsed"/>
+                                        <TextBlock x:Name="ResumeErrorText" Text="Resume file not found or path is invalid" Foreground="#EF4444" FontSize="12" Margin="0,16,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                 </Border>
 
