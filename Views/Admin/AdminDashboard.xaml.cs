@@ -36,9 +36,8 @@ namespace IMS.Views.Admin
         {
             try
             {
-                var designationControl = new DesignationControl();
-
-                MainContent.Content = designationControl;
+                SetActiveButton(BtnDesignations);
+                MainContent.Content = new DesignationControl();
             }
             catch (Exception ex)
             {
@@ -48,19 +47,13 @@ namespace IMS.Views.Admin
         }
 
 
-        private void BtnLogout_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Logged out successfully!", "Logout", MessageBoxButton.OK, MessageBoxImage.Information);
-            LoginView login = new LoginView();
-            login.Show();
-            this.Close();
-        }
         private void SetActiveButton(Button activeButton)
         {
             // Reset all
             BtnHome.Tag = null;
             BtnApplicants.Tag = null;
             BtnSelected.Tag = null;
+            BtnDesignations.Tag = null;
 
             // Highlight only the active one
             activeButton.Tag = "Active";

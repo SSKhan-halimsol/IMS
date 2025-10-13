@@ -19,7 +19,7 @@
             <GradientStop Color="#EF4444" Offset="0"/>
             <GradientStop Color="#DC2626" Offset="1"/>
         </LinearGradientBrush>
-
+        
         <!-- Add Button Style -->
         <Style x:Key="AddButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource GreenGradient}"/>

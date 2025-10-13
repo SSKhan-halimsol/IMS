@@ -276,13 +276,8 @@
     <Resource Include="Photos\applicant.png" />
     <Resource Include="Circle1-removebg-preview 1.png" />
     <Resource Include="Circle1-removebg-preview 2.png" />
-    <Resource Include="Photos\dash.png" />
+    <Resource Include="Photos\logout.png" />
     <Resource Include="Photos\back.png" />
-    <Resource Include="Photos\accept.png" />
-    <Resource Include="Photos\reject.png" />
-    <Resource Include="Photos\delete.png" />
-    <Resource Include="Photos\switch.png" />
-    <Resource Include="Photos\check-out.png" />
     <Content Include="SQL\001_CreateTables.sql" />
     <Content Include="SQL\002_DefaultData.sql" />
   </ItemGroup>

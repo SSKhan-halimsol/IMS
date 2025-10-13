@@ -27,7 +27,15 @@ namespace IMS.Views.Admin
                 _refreshTimer.Start();
             }
 
-            private void LoadApplicantStats()
+        private void BtnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Logged out successfully!", "Logout", MessageBoxButton.OK, MessageBoxImage.Information);
+            LoginView login = new LoginView();
+            login.Show();
+            Window.GetWindow(this)?.Close();
+        }
+
+        private void LoadApplicantStats()
             {
                 try
                 {

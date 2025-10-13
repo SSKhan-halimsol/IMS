@@ -30,7 +30,7 @@
             <GradientStop Color="#1A1F3A" Offset="0"/>
             <GradientStop Color="#141829" Offset="1"/>
         </LinearGradientBrush>
-
+        
         <!-- Enhanced Card Style with Animation -->
         <Style x:Key="DashboardCard" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource CardBackground}"/>
@@ -228,16 +228,11 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Background="#1E293B" 
-                            CornerRadius="10" 
-                            Padding="14,8"
-                            BorderBrush="#334155"
-                            BorderThickness="1">
-                        <TextBlock x:Name="CurrentDateText" 
-                                   Text="{Binding Date, StringFormat='dd MMM yyyy'}" 
-                                   Foreground="#CBD5E1" 
-                                   FontSize="13"
-                                   FontWeight="SemiBold"/>
+                    <Border Background="Transparent" 
+                            BorderThickness="0">
+                        <Button Background="Transparent" Height="40" Click="BtnLogout_Click" Cursor="Hand" BorderThickness="0">
+                            <Image Source="/Photos/logout.png"></Image>
+                        </Button>
                     </Border>
                 </StackPanel>
             </Grid>

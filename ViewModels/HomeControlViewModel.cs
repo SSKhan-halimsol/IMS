@@ -162,12 +162,12 @@ namespace IMS.ViewModels
             // Modern color palette for pie chart
             var colors = new[]
             {
-                OxyColor.FromRgb(16, 185, 129),   // Green
-                OxyColor.FromRgb(59, 130, 246),   // Blue
-                OxyColor.FromRgb(139, 92, 246),   // Purple
-                OxyColor.FromRgb(245, 158, 11),   // Orange
-                OxyColor.FromRgb(239, 68, 68),    // Red
-                OxyColor.FromRgb(236, 72, 153)    // Pink
+                OxyColor.FromRgb(54, 136, 151),    // Bright Green (Primary - matches your theme)
+                OxyColor.FromRgb(0, 128, 128),   // Blue (keeps good contrast)
+                OxyColor.FromRgb(0, 130, 127),  // Medium Gray (neutral, professional)
+                OxyColor.FromRgb(0, 109, 91),     // Dark Gray (subtle contrast)
+                OxyColor.FromRgb(205, 122, 0),  // Light Gray (softer tone)
+                OxyColor.FromRgb(34, 197, 94)     // Emerald Green (complementary to primary)
             };
 
             var pieSeries = new PieSeries
@@ -178,7 +178,7 @@ namespace IMS.ViewModels
                 AngleSpan = 360,
                 StartAngle = 0,
                 InsideLabelColor = OxyColors.White,
-                OutsideLabelFormat = "{1}: {2:0}",
+                OutsideLabelFormat = "{2:0}",
                 TextColor = OxyColor.FromRgb(203, 213, 225),
                 FontSize = 12,
                 FontWeight = FontWeights.Bold

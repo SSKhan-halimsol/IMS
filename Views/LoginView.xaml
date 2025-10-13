@@ -79,7 +79,7 @@
                     Height="40" Width="120"
                     Background="#7CFC00" 
                     Foreground="Black"
-                    FontSize="18" 
+                    FontSize="18" IsDefault="True"
                     FontWeight="Bold" Command="{Binding LoginCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
 

@@ -40,40 +40,42 @@ namespace IMS.Views
 
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (_step == 1) 
-            { 
-                Step1Panel.Visibility = Visibility.Collapsed; 
-                Step2Panel.Visibility = Visibility.Visible; 
+            if (_step == 1)
+            {
+                Step1Panel.Visibility = Visibility.Collapsed;
+                Step2Panel.Visibility = Visibility.Visible;
                 StepTitle.Text = "Step 2 of 3 - Technical Information";
-                BackBtn.Visibility = Visibility.Visible; 
-            } 
-            else if (_step == 2) 
-            { Step2Panel.Visibility = Visibility.Collapsed; 
-                Step3Panel.Visibility = Visibility.Visible; 
-                StepTitle.Text = "Step 3 of 3 - Work Experience"; 
-                NextBtn.Visibility = Visibility.Collapsed; 
-                SubmitBtn.Visibility = Visibility.Visible; 
+                BackBtn.Visibility = Visibility.Visible;
+            }
+            else if (_step == 2)
+            {
+                Step2Panel.Visibility = Visibility.Collapsed;
+                Step3Panel.Visibility = Visibility.Visible;
+                StepTitle.Text = "Step 3 of 3 - Work Experience";
+                NextBtn.Visibility = Visibility.Collapsed;
+                SubmitBtn.Visibility = Visibility.Visible;
             }
             _step++;
             MainScrollViewer.ScrollToTop();
         }
 
         private void BackBtn_Click(object sender, RoutedEventArgs e)
-        { 
-            if (_step == 2) 
-            { 
-                Step2Panel.Visibility = Visibility.Collapsed; 
-                Step1Panel.Visibility = Visibility.Visible; 
-                StepTitle.Text = "Step 1 of 3 - Basic Information"; 
-                BackBtn.Visibility = Visibility.Collapsed; 
+        {
+            if (_step == 2)
+            {
+                Step2Panel.Visibility = Visibility.Collapsed;
+                Step1Panel.Visibility = Visibility.Visible;
+                StepTitle.Text = "Step 1 of 3 - Basic Information";
+                BackBtn.Visibility = Visibility.Collapsed;
             }
 
-            else if (_step == 3) 
-            { Step3Panel.Visibility = Visibility.Collapsed; 
-                Step2Panel.Visibility = Visibility.Visible; 
-                StepTitle.Text = "Step 2 of 3 - Technical Information"; 
-                NextBtn.Visibility = Visibility.Visible; 
-                SubmitBtn.Visibility = Visibility.Collapsed; 
+            else if (_step == 3)
+            {
+                Step3Panel.Visibility = Visibility.Collapsed;
+                Step2Panel.Visibility = Visibility.Visible;
+                StepTitle.Text = "Step 2 of 3 - Technical Information";
+                NextBtn.Visibility = Visibility.Visible;
+                SubmitBtn.Visibility = Visibility.Collapsed;
             }
             _step--;
             MainScrollViewer.ScrollToTop();
@@ -84,7 +86,7 @@ namespace IMS.Views
 
             try
             {
-                    
+
                 Applicant applicant = new Applicant
                 {
                     ApplicantName = FullNameBox.Text,

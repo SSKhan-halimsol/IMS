@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
-using Interview_Management_System.Helpers;
+using System;
+using System.Data.SqlClient;
 
 namespace IMS.Views
 {
@@ -39,12 +40,22 @@ namespace IMS.Views
         {
             try
             {
-                // Your DB connection logic here (e.g. SQL connection test)
-                System.Threading.Thread.Sleep(2000); // simulate delay
-                return true; // return false if failed
+                string connectionString = @"Data Source=192.168.1.188;Initial Catalog=IMS;User ID=sa;Password=123456;MultipleActiveResultSets=True";
+                
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    return connection.State == System.Data.ConnectionState.Open;
+                }
             }
-            catch
+            catch (SqlException ex)
             {
+                Console.WriteLine($"Database connection failed: {ex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
                 return false;
             }
         }
