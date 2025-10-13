@@ -2,10 +2,12 @@
 using IMS.Helpers;
 using IMS.Models;
 using IMS.ViewModels;
+using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -14,6 +16,7 @@ namespace IMS.Views
     public partial class ApplicantsControl : UserControl
     {
         private int _step = 1;
+        private string _resumeFilePath = null;
 
         public ApplicantsControl()
         {
@@ -21,11 +24,13 @@ namespace IMS.Views
             this.Loaded += ApplicantsControl_Loaded;
             LoadDesignations();
         }
+
         private async void LoadDesignations()
         {
             var list = await DesignationRepository.GetAllAsync();
             DesignationBox.ItemsSource = list;
         }
+
         private void ApplicantsControl_Loaded(object sender, RoutedEventArgs e)
         {
             Window parentWindow = Window.GetWindow(this);
@@ -36,6 +41,72 @@ namespace IMS.Views
                 parentWindow.WindowStyle = WindowStyle.None;
                 parentWindow.ResizeMode = ResizeMode.NoResize;
             }
+        }
+
+        private void UploadResumeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Title = "Select Resume",
+                    Filter = "PDF Files (*.pdf)|*.pdf|Word Documents (*.docx;*.doc)|*.docx;*.doc|All Files (*.*)|*.*",
+                    FilterIndex = 1
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    string selectedFile = openFileDialog.FileName;
+                    FileInfo fileInfo = new FileInfo(selectedFile);
+
+                    // Check file size (limit to 10MB)
+                    if (fileInfo.Length > 10 * 1024 * 1024)
+                    {
+                        MessageBox.Show("File size exceeds 10MB limit. Please select a smaller file.",
+                            "File Too Large", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Create Resumes directory if it doesn't exist
+                    string resumesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resumes");
+                    if (!Directory.Exists(resumesFolder))
+                    {
+                        Directory.CreateDirectory(resumesFolder);
+                    }
+
+                    // Generate unique filename
+                    string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    string safeFileName = Path.GetFileNameWithoutExtension(selectedFile)
+                        .Replace(" ", "_")
+                        .Replace(".", "_");
+                    string extension = Path.GetExtension(selectedFile);
+                    string newFileName = $"{safeFileName}_{timestamp}{extension}";
+                    string destinationPath = Path.Combine(resumesFolder, newFileName);
+
+                    // Copy file to Resumes folder
+                    File.Copy(selectedFile, destinationPath, true);
+                    _resumeFilePath = destinationPath;
+
+                    // Update UI
+                    ResumeFileNameText.Text = Path.GetFileName(destinationPath);
+                    ResumeUploadStatus.Text = "✓ Resume uploaded successfully";
+                    ResumeUploadStatus.Foreground = System.Windows.Media.Brushes.LightGreen;
+                    RemoveResumeBtn.Visibility = Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error uploading resume: {ex.Message}",
+                    "Upload Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void RemoveResumeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            _resumeFilePath = null;
+            ResumeFileNameText.Text = "No file selected";
+            ResumeUploadStatus.Text = "";
+            RemoveResumeBtn.Visibility = Visibility.Collapsed;
         }
 
         private void NextBtn_Click(object sender, RoutedEventArgs e)
@@ -68,7 +139,6 @@ namespace IMS.Views
                 StepTitle.Text = "Step 1 of 3 - Basic Information";
                 BackBtn.Visibility = Visibility.Collapsed;
             }
-
             else if (_step == 3)
             {
                 Step3Panel.Visibility = Visibility.Collapsed;
@@ -83,10 +153,8 @@ namespace IMS.Views
 
         private void SubmitBtn_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
-
                 Applicant applicant = new Applicant
                 {
                     ApplicantName = FullNameBox.Text,
@@ -100,6 +168,7 @@ namespace IMS.Views
                     AppliedFor = DesignationBox.Text,
                     Address = AddressBox.Text,
                     Email = EmailBox.Text,
+                    ResumePath = _resumeFilePath, // Add resume path
 
                     CurrentPositionReason = LeavingReasonBox.Text,
                     OOPRating = OopRatingBox.SelectedItem != null ? (int)OopRatingBox.SelectedItem : 0,
@@ -122,7 +191,7 @@ namespace IMS.Views
                     Willingness = WillingnessBox.SelectedItem?.ToString()
                 };
 
-                // save to DB
+                // Save to DB
                 using (SqlConnection conn = new SqlConnection(DbChecker.ConnectionString))
                 {
                     conn.Open();
@@ -141,7 +210,7 @@ namespace IMS.Views
                             INSERT INTO Applicants
                             (
                                 ApplicantName, FatherName, CNIC, FatherProfession, ContactNo, Date, MaritalStatus,
-                                Age, AppliedFor, Address, Email,
+                                Age, AppliedFor, Address, Email, ResumePath,
                                 CurrentPositionReason, OOPRating, SQLRating, UIRating, IsCurrentlyEmployed, CurrentCompany,
                                 WhyThisJob, WatchCheck, Challenges, Strengths, Weaknesses,
                                 Frameworks, ExperienceDuration, Goals, CurrentSalary, EducationInstitute, CGPA, Willingness
@@ -150,13 +219,13 @@ namespace IMS.Views
                             VALUES
                             (
                                 @ApplicantName, @FatherName, @CNIC, @FatherProfession, @ContactNo, @Date, @MaritalStatus,
-                                @Age, @AppliedFor, @Address, @Email,
+                                @Age, @AppliedFor, @Address, @Email, @ResumePath,
                                 @CurrentPositionReason, @OOPRating, @SQLRating, @UIRating, @IsCurrentlyEmployed, @CurrentCompany,
                                 @WhyThisJob, @WatchCheck, @Challenges, @Strengths, @Weaknesses,
                                 @Frameworks, @ExperienceDuration, @Goals, @CurrentSalary, @EducationInstitute, @CGPA, @Willingness
                             )";
 
-                        // add parameters
+                        // Add parameters
                         cmd.Parameters.AddWithValue("@ApplicantName", applicant.ApplicantName ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@FatherName", applicant.FatherName ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@CNIC", applicant.CNIC ?? (object)DBNull.Value);
@@ -168,6 +237,7 @@ namespace IMS.Views
                         cmd.Parameters.AddWithValue("@AppliedFor", applicant.AppliedFor ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@Address", applicant.Address ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@Email", applicant.Email ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ResumePath", applicant.ResumePath ?? (object)DBNull.Value);
 
                         cmd.Parameters.AddWithValue("@CurrentPositionReason", applicant.CurrentPositionReason ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@OOPRating", applicant.OOPRating);
@@ -194,18 +264,18 @@ namespace IMS.Views
                         {
                             applicant.Id = newId;
                         }
-
                     }
                 }
+
                 MessageBox.Show("Form Submitted and Data Saved Successfully!",
                        "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // after successful insert and applicant.Id is set:
-                int applicantId = applicant.Id; // ensure this contains the inserted Id
+                // After successful insert and applicant.Id is set:
+                int applicantId = applicant.Id;
                 string experience = applicant.ExperienceDuration ?? string.Empty;
                 string designation = DesignationBox.SelectedItem?.ToString() ?? string.Empty;
 
-                // create the quiz control
+                // Create the quiz control
                 IMS.Views.QuizControl quiz = new IMS.Views.QuizControl(applicantId, experience, designation);
                 Window parentWindow = Window.GetWindow(this);
                 if (parentWindow != null)
@@ -214,22 +284,21 @@ namespace IMS.Views
                     if (named != null && named is ContentControl)
                     {
                         ((ContentControl)named).Content = quiz;
-                        return; // done
+                        return;
                     }
 
-                    // 2) fallback: set window content (replaces whole window content)
+                    // Fallback: set window content (replaces whole window content)
                     parentWindow.Content = quiz;
                     return;
                 }
 
-                // 3) final fallback: hide this control and add quiz to same parent panel
+                // Final fallback: hide this control and add quiz to same parent panel
                 this.Visibility = Visibility.Collapsed;
                 Panel parentPanel = this.Parent as Panel;
                 if (parentPanel != null)
                 {
                     parentPanel.Children.Add(quiz);
                 }
-
             }
             catch (Exception ex)
             {

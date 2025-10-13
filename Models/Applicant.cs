@@ -42,5 +42,7 @@ namespace IMS.Models
         public string Domain { get; set; }
         public string Status { get; set; }
         public string AdminComment { get; set; }
+        public string ResumePath { get; set; }
+
     }
 }
