@@ -424,7 +424,7 @@
                                    FontWeight="Medium"
                                    Margin="0,0,0,6"/>
                             <ComboBox x:Name="DesignationBox" ItemsSource="{StaticResource AppliedForOptions}" 
-                                SelectedIndex="0"  Style="{StaticResource DarkComboBoxStyle}"
+                                SelectedIndex="0" DisplayMemberPath="Title" SelectedValuePath="Title"  Style="{StaticResource DarkComboBoxStyle}"
                                 ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}"/>
                         </StackPanel>
                         
