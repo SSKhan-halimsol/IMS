@@ -114,6 +114,9 @@
     <Compile Include="Models\Designation.cs" />
     <Compile Include="Models\Interviewer.cs" />
     <Compile Include="Converters\StepToVisibilityConverter.cs" />
+    <Compile Include="Models\Quiz.cs" />
+    <Compile Include="Models\QuizAnswer.cs" />
+    <Compile Include="Models\QuizQuestion.cs" />
     <Compile Include="Models\QuizResult.cs" />
     <Compile Include="ViewModels\ApplicantsAdminViewModel.cs" />
     <Compile Include="ViewModels\ApplicantsViewModel.cs" />
@@ -139,6 +142,9 @@
     </Compile>
     <Compile Include="Views\Admin\HomeControl.xaml.cs">
       <DependentUpon>HomeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Admin\QuizManagementControl.xaml.cs">
+      <DependentUpon>QuizManagementControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Admin\SuccessfulCandidatesControl.xaml.cs">
       <DependentUpon>SuccessfulCandidatesControl.xaml</DependentUpon>
@@ -172,6 +178,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Admin\HomeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Admin\QuizManagementControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

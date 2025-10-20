@@ -32,6 +32,12 @@ namespace IMS.Views.Admin
             MainContent.Content = new SuccessfulCandidatesControl(this);
         }
 
+        private void BtnQuiz_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveButton(BtnQuiz);
+            MainContent.Content = new QuizManagementControl();
+        }
+
         private void BtnDesignations_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -54,6 +60,7 @@ namespace IMS.Views.Admin
             BtnApplicants.Tag = null;
             BtnSelected.Tag = null;
             BtnDesignations.Tag = null;
+            BtnQuiz.Tag = null;
 
             // Highlight only the active one
             activeButton.Tag = "Active";

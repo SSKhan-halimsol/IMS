@@ -205,6 +205,12 @@
                         Height="48" 
                         Click="BtnDesignations_Click"
                         Style="{StaticResource NavButtonStyle}"/>
+
+                <Button x:Name="BtnQuiz" 
+                        Content="👔  Quiz" 
+                        Height="48" 
+                        Click="BtnQuiz_Click"
+                        Style="{StaticResource NavButtonStyle}"/>
             </StackPanel>
 
             <!-- Bottom Section -->

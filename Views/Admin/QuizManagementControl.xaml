@@ -1,0 +1,791 @@
+﻿<UserControl x:Class="IMS.Views.Admin.QuizManagementControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Background="#0A0E27">
+
+    <UserControl.Resources>
+        <x:Array x:Key="ExperienceRating" Type="sys:String">
+            <sys:String>Fresher</sys:String>
+            <sys:String>6 Months</sys:String>
+            <sys:String>Less than 5 Years</sys:String>
+            <sys:String>Less than 10 Years</sys:String>
+            <sys:String>Less than 20 Years</sys:String>
+        </x:Array>
+
+        <x:Array x:Key="AppliedForOptions" Type="sys:String">
+            <sys:String>.NET developer</sys:String>
+            <sys:String>QA Engineer</sys:String>
+            <sys:String>Angular developer</sys:String>
+            <sys:String>PHP developer</sys:String>
+        </x:Array>
+
+        <!-- Dark ComboBox Style -->
+        <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#F1F5F9"/>
+            <Setter Property="BorderBrush" Value="#475569"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <ContentPresenter x:Name="ContentSite"
+                                                IsHitTestVisible="False"
+                                                Content="{TemplateBinding SelectionBoxItem}"
+                                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                Margin="{TemplateBinding Padding}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"/>
+
+                                    <ToggleButton Grid.Column="1"
+                                            x:Name="ToggleButton"
+                                            Focusable="False"
+                                            IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                            ClickMode="Press"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Width="30">
+                                        <Path Data="M 0 0 L 4 4 L 8 0 Z"
+                                          Fill="#94A3B8"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                                    </ToggleButton>
+                                </Grid>
+                            </Border>
+
+                            <Popup x:Name="Popup"
+                               Placement="Bottom"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Slide">
+                                <Border Background="#1E293B"
+                                    BorderBrush="#14B8A6"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Margin="0,4,0,0"
+                                    MaxHeight="200">
+                                    <ScrollViewer Margin="0" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#14B8A6"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#14B8A6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBoxItem Style -->
+        <Style x:Key="DarkComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#F1F5F9"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Border"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#334155"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#0F766E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Gradient Brushes -->
+        <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#10B981" Offset="0"/>
+            <GradientStop Color="#059669" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#1E293B" Offset="0"/>
+            <GradientStop Color="#0F172A" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#10B981" BlurRadius="15" ShadowDepth="0" Opacity="0.4"/>
+                            </Border.Effect>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#10B981" BlurRadius="20" ShadowDepth="0" Opacity="0.6"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Delete Button Style -->
+        <Style x:Key="DeleteButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#EF4444" Offset="0"/>
+                        <GradientStop Color="#DC2626" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Secondary Button Style -->
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#3B82F6" Offset="0"/>
+                        <GradientStop Color="#2563EB" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern TextBox Style with PROPER INPUT SUPPORT -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="CaretBrush" Value="#10B981"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="10">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                Margin="0"
+                                VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#10B981"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#10B981"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Multi-line TextBox Style -->
+        <Style x:Key="ModernTextBoxMultiLine" TargetType="TextBox" BasedOn="{StaticResource ModernTextBox}">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="AcceptsReturn" Value="True"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalScrollBarVisibility="Auto"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#10B981"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#10B981" BlurRadius="10" ShadowDepth="0" Opacity="0.3"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#64748B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern ListBox Style -->
+        <Style x:Key="ModernListBox" TargetType="ListBox">
+            <Setter Property="Background" Value="#0F172A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="8">
+                            <ScrollViewer>
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ListBox Item Style -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1E293B"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#1E293B" Offset="0"/>
+                                            <GradientStop Color="#10B98120" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Card Style -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="0" Opacity="0.4"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="30">
+        <StackPanel MaxWidth="1400">
+            <!-- Header -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,24">
+                <StackPanel>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Background="{StaticResource AccentGradient}"
+                                    Width="48"
+                                    Height="48"
+                                    CornerRadius="12"
+                                    Margin="0,0,16,0">
+                                <TextBlock Text="📝" 
+                                           FontSize="24" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#10B981" BlurRadius="15" ShadowDepth="0" Opacity="0.6"/>
+                                </Border.Effect>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Quiz Management" 
+                                           FontSize="28" 
+                                           FontWeight="Bold" 
+                                           Foreground="White"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock Text="Create and manage interview quizzes" 
+                                           FontSize="14" 
+                                           Foreground="#94A3B8"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Quiz Details Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,24">
+                <StackPanel>
+                    <TextBlock Text="Quiz Details" 
+                               FontSize="18" 
+                               FontWeight="SemiBold" 
+                               Foreground="White"
+                               Margin="0,0,0,20"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Quiz Title -->
+                        <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,12,16">
+                            <TextBlock Text="Quiz Title" 
+                                       Foreground="#94A3B8" 
+                                       FontSize="12" 
+                                       FontWeight="Medium"
+                                       Margin="0,0,0,6"/>
+                            <TextBox x:Name="txtTitle" 
+                                     Style="{StaticResource ModernTextBox}"
+                                     Height="42"
+                                     VerticalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Designation -->
+                        <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,0,12,16">
+                            <TextBlock Text="Designation" 
+                                   Foreground="#94A3B8" 
+                                   FontSize="12" 
+                                   FontWeight="Medium"
+                                   Margin="0,0,0,6"/>
+                            <ComboBox x:Name="DesignationBox" ItemsSource="{StaticResource AppliedForOptions}" 
+                                SelectedIndex="0"  Style="{StaticResource DarkComboBoxStyle}"
+                                ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}"/>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,12,16">
+                            <TextBlock Text="Experience Level" 
+                                       Foreground="#94A3B8" 
+                                       FontSize="12" 
+                                       FontWeight="Medium"
+                                       Margin="0,0,0,6"/>
+                            <ComboBox x:Name="ExperienceBox" 
+                                      ItemsSource="{StaticResource ExperienceRating}" 
+                                      SelectedIndex="0"
+                                      Style="{StaticResource DarkComboBoxStyle}"
+                                      ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}"/> 
+                        </StackPanel>
+
+                        <!-- Duration -->
+                        <StackPanel Grid.Column="1" Grid.Row="1" Margin="12,0,0,16">
+                            <TextBlock Text="Duration (Minutes)" 
+                                       Foreground="#94A3B8" 
+                                       FontSize="12" 
+                                       FontWeight="Medium"
+                                       Margin="0,0,0,6"/>
+                            <TextBox x:Name="txtDuration" 
+                                     Style="{StaticResource ModernTextBox}"
+                                     Height="42"
+                                     VerticalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Action Buttons -->
+                        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" 
+                                    Orientation="Horizontal" 
+                                    HorizontalAlignment="Right"
+                                    Margin="0,8,0,0">
+                            <Button Content="💾 Save Quiz" 
+                                    Width="140" 
+                                    Height="42"
+                                    Style="{StaticResource ModernButton}"
+                                    Click="SaveQuiz_Click"/>
+                            <Button Content="🗑️ Delete Quiz" 
+                                    Width="140" 
+                                    Height="42"
+                                    Margin="12,0,0,0"
+                                    Style="{StaticResource DeleteButton}"
+                                    Click="DeleteQuiz_Click"/>
+                            <Button Content="🔄 Refresh" 
+                                    Width="120" 
+                                    Height="42"
+                                    Margin="12,0,0,0"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Click="RefreshQuizzes_Click"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Existing Quizzes List -->
+                    <Border Background="#0F172A" 
+                            CornerRadius="12" 
+                            BorderBrush="#334155" 
+                            BorderThickness="1"
+                            Margin="0,20,0,0"
+                            Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="📋 Existing Quizzes" 
+                                       FontSize="14" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="White"
+                                       Margin="0,0,0,12"/>
+                            <ListBox x:Name="lstQuizzes" 
+                                     Height="140"
+                                     DisplayMemberPath="QuizTitle"
+                                     Style="{StaticResource ModernListBox}"
+                                     SelectionChanged="lstQuizzes_SelectionChanged"/>
+                            <Button Content="➕ Create New Quiz" 
+                                    Width="160" 
+                                    Height="38"
+                                    Margin="0,12,0,0"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource ModernButton}"
+                                    Click="NewQuiz_Click"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Questions and Answers Grid -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Questions Card -->
+                <Border Grid.Column="0" 
+                        Style="{StaticResource CardStyle}" 
+                        Margin="0,0,12,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,16">
+                            <TextBlock Text="❓ Questions" 
+                                       FontSize="18" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Right">
+                                <Border Background="#10B98120" 
+                                        CornerRadius="20" 
+                                        Padding="12,6">
+                                    <TextBlock x:Name="txtQuestionCount"
+                                               Text="0 Questions" 
+                                               Foreground="#10B981" 
+                                               FontSize="12"
+                                               FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Questions ListBox -->
+                        <ListBox x:Name="lstQuestions"
+                                 Height="300"
+                                 DisplayMemberPath="QuestionText"
+                                 Style="{StaticResource ModernListBox}"
+                                 SelectionChanged="lstQuestions_SelectionChanged"/>
+
+                        <StackPanel Orientation="Horizontal" 
+                                    Margin="0,16,0,0"
+                                    HorizontalAlignment="Center">
+                            <Button Content="➕ Add Question" 
+                                    Width="150" 
+                                    Height="38"
+                                    Style="{StaticResource ModernButton}"
+                                    Click="AddQuestion_Click"/>
+                            <Button Content="🗑️ Remove Question" 
+                                    Width="150" 
+                                    Height="38"
+                                    Margin="12,0,0,0"
+                                    Style="{StaticResource DeleteButton}"
+                                    Click="RemoveQuestion_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Answers Card -->
+                <Border Grid.Column="1" 
+                        Style="{StaticResource CardStyle}" 
+                        Margin="12,0,0,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,16">
+                            <TextBlock Text="✅ Answers" 
+                                       FontSize="18" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Right">
+                                <Border Background="#3B82F620" 
+                                        CornerRadius="20" 
+                                        Padding="12,6">
+                                    <TextBlock x:Name="txtAnswerCount"
+                                               Text="0 Answers" 
+                                               Foreground="#3B82F6" 
+                                               FontSize="12"
+                                               FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Question Text Editor -->
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="Question Text" 
+                                       Foreground="#94A3B8" 
+                                       FontSize="12" 
+                                       FontWeight="Medium"
+                                       Margin="0,0,0,6"/>
+                            <TextBox x:Name="txtQuestionText" 
+                                     Style="{StaticResource ModernTextBoxMultiLine}"
+                                     Height="80"
+                                     LostFocus="txtQuestionText_LostFocus"/>
+                        </StackPanel>
+
+                        <!-- Answers List -->
+                        <TextBlock Text="Answer Options" 
+                                   Foreground="#94A3B8" 
+                                   FontSize="12" 
+                                   FontWeight="Medium"
+                                   Margin="0,0,0,8"/>
+
+                        <ListView x:Name="lstAnswers" 
+                                  Height="280"
+                                  Background="#0F172A"
+                                  BorderBrush="#334155"
+                                  BorderThickness="1"
+                                  Margin="0,0,0,16"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListView.Resources>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Padding" Value="8,6"/>
+                                    <Setter Property="Margin" Value="4,2"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListViewItem">
+                                                <Border x:Name="border"
+                                                        Background="{TemplateBinding Background}"
+                                                        CornerRadius="8"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <GridViewRowPresenter Content="{TemplateBinding Content}"
+                                                                          Columns="{TemplateBinding GridView.ColumnCollection}"
+                                                                          HorizontalAlignment="Stretch"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#1E293B"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#1E293B"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.Resources>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Answer Text" Width="420">
+                                        <GridViewColumn.HeaderContainerStyle>
+                                            <Style TargetType="GridViewColumnHeader">
+                                                <Setter Property="Background" Value="#0F172A"/>
+                                                <Setter Property="Foreground" Value="#94A3B8"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="FontSize" Value="12"/>
+                                                <Setter Property="Padding" Value="12,10"/>
+                                            </Style>
+                                        </GridViewColumn.HeaderContainerStyle>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding AnswerText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                                         Width="400" 
+                                                         Background="#1E293B" 
+                                                         Foreground="White" 
+                                                         CaretBrush="White"
+                                                         SelectionBrush="#10B981"
+                                                         BorderBrush="#334155"
+                                                         BorderThickness="1"
+                                                         Padding="10,8"
+                                                         FontSize="13"
+                                                         VerticalContentAlignment="Center"
+                                                         LostFocus="AnswerText_LostFocus">
+                                                    <TextBox.Style>
+                                                        <Style TargetType="TextBox">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="TextBox">
+                                                                        <Border x:Name="border"
+                                                                                Background="{TemplateBinding Background}"
+                                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                                CornerRadius="6">
+                                                                            <ScrollViewer x:Name="PART_ContentHost" 
+                                                                                          Margin="{TemplateBinding Padding}"
+                                                                                          VerticalAlignment="Center"
+                                                                                          Focusable="False"
+                                                                                          HorizontalScrollBarVisibility="Hidden"
+                                                                                          VerticalScrollBarVisibility="Hidden"/>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsFocused" Value="True">
+                                                                                <Setter TargetName="border" Property="BorderBrush" Value="#10B981"/>
+                                                                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                                                            </Trigger>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter TargetName="border" Property="BorderBrush" Value="#64748B"/>
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </TextBox.Style>
+                                                </TextBox>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Correct?" Width="100">
+                                        <GridViewColumn.HeaderContainerStyle>
+                                            <Style TargetType="GridViewColumnHeader">
+                                                <Setter Property="Background" Value="#0F172A"/>
+                                                <Setter Property="Foreground" Value="#94A3B8"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="FontSize" Value="12"/>
+                                                <Setter Property="Padding" Value="12,10"/>
+                                            </Style>
+                                        </GridViewColumn.HeaderContainerStyle>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding IsCorrect, Mode=TwoWay}" 
+                                                          HorizontalAlignment="Center"
+                                                          Checked="Answer_Checked" 
+                                                          Unchecked="Answer_Checked">
+                                                    <CheckBox.Style>
+                                                        <Style TargetType="CheckBox">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="CheckBox">
+                                                                        <Border x:Name="checkBorder"
+                                                                                Width="24"
+                                                                                Height="24"
+                                                                                Background="#0F172A"
+                                                                                BorderBrush="#334155"
+                                                                                BorderThickness="2"
+                                                                                CornerRadius="6">
+                                                                            <TextBlock x:Name="checkMark"
+                                                                                       Text="✓"
+                                                                                       FontSize="16"
+                                                                                       FontWeight="Bold"
+                                                                                       Foreground="#10B981"
+                                                                                       HorizontalAlignment="Center"
+                                                                                       VerticalAlignment="Center"
+                                                                                       Visibility="Collapsed"/>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsChecked" Value="True">
+                                                                                <Setter TargetName="checkMark" Property="Visibility" Value="Visible"/>
+                                                                                <Setter TargetName="checkBorder" Property="Background" Value="#10B98130"/>
+                                                                                <Setter TargetName="checkBorder" Property="BorderBrush" Value="#10B981"/>
+                                                                            </Trigger>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter TargetName="checkBorder" Property="BorderBrush" Value="#10B981"/>
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </CheckBox.Style>
+                                                </CheckBox>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                        <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Center">
+                            <Button Content="➕ Add Answer" 
+                                    Width="150" 
+                                    Height="38"
+                                    Style="{StaticResource ModernButton}"
+                                    Click="AddAnswer_Click"/>
+                            <Button Content="🗑️ Remove Answer" 
+                                    Width="150" 
+                                    Height="38"
+                                    Margin="12,0,0,0"
+                                    Style="{StaticResource DeleteButton}"
+                                    Click="RemoveAnswer_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
