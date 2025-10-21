@@ -12,49 +12,42 @@ namespace IMS.Views
 {
     public partial class QuizControl : UserControl
     {
-        private readonly List<Question> _questions;
-        private readonly Dictionary<int, int> _answers;
-        private int _currentIndex;
+        private List<QuizQuestion> _questions;
+        private readonly Dictionary<int, int> _answers = new Dictionary<int, int>();
+        private int _currentIndex = 0;
         private readonly int _applicantId;
+        private int _quizId;
+
         private readonly DispatcherTimer _questionTimer;
         private readonly DispatcherTimer _totalTimer;
-        private int _questionTimeRemaining = 10;
-        private int _totalTimeRemaining;
 
-        public QuizControl()
-        {
-            InitializeComponent();
-        }
+        private int _questionTimeRemaining = 15;
+        private int _totalTimeRemaining;
 
         public QuizControl(int applicantId, string experienceLevel, string designation)
         {
             InitializeComponent();
             _applicantId = applicantId;
-            var allQuestions = QuizLoader.GetQuestions(experienceLevel ?? string.Empty, designation ?? string.Empty);
 
-            if (allQuestions != null && allQuestions.Count > 0)
-            {
-                var rnd = new Random();
-                _questions = allQuestions.OrderBy(q => rnd.Next()).Take(10).ToList();
-            }
-            else
-            {
-                _questions = new List<Question>();
-            }
+            // Trim and normalize input
+            designation = (designation ?? "").Trim().ToLower();
+            experienceLevel = (experienceLevel ?? "").Trim().ToLower();
 
-            _answers = new Dictionary<int, int>();
-            _currentIndex = 0;
-            WelcomeText.Text = $"Welcome!! Ready to take your quiz?";
+            _questions = LoadQuizFromDatabase(experienceLevel, designation);
 
-            if (_questions.Count == 0)
+            if (_questions == null || _questions.Count == 0)
             {
-                MessageBox.Show("No quiz questions available for this designation.", "Quiz", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("No quiz available for your designation and experience level.", "Quiz", MessageBoxButton.OK, MessageBoxImage.Warning);
                 this.Visibility = Visibility.Collapsed;
                 return;
             }
 
-            // Initialize timers
+            // Randomize question order
+            Random rnd = new Random();
+            _questions = _questions.OrderBy(q => rnd.Next()).ToList();
+
             _totalTimeRemaining = _questions.Count * 15;
+            WelcomeText.Text = "Welcome! Ready to take your quiz?";
 
             _questionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             _questionTimer.Tick += QuestionTimer_Tick;
@@ -66,11 +59,99 @@ namespace IMS.Views
             UpdateNavigation();
         }
 
+        private List<QuizQuestion> LoadQuizFromDatabase(string experienceLevel, string designation)
+        {
+            var questions = new List<QuizQuestion>();
+
+            try
+            {
+                using (SqlConnection con = new SqlConnection(DbChecker.ConnectionString))
+                {
+                    con.Open();
+
+                    // 🔹 FIX: Match using LOWER + TRIM to avoid case or space mismatches
+                    string quizQuery = @"
+                        SELECT TOP 1 QuizID 
+                        FROM Quiz
+                        WHERE LOWER(LTRIM(RTRIM(Designation))) = LOWER(LTRIM(RTRIM(@d)))
+                          AND LOWER(LTRIM(RTRIM(ExperienceLevel))) = LOWER(LTRIM(RTRIM(@e)))
+                          AND IsActive = 1
+                        ORDER BY CreatedAt DESC";
+
+                    using (SqlCommand getQuiz = new SqlCommand(quizQuery, con))
+                    {
+                        getQuiz.Parameters.AddWithValue("@d", designation);
+                        getQuiz.Parameters.AddWithValue("@e", experienceLevel);
+
+                        object quizObj = getQuiz.ExecuteScalar();
+                        if (quizObj == null)
+                        {
+                            // 🔹 Log for debugging
+                            Console.WriteLine($"No quiz found for Designation='{designation}', Experience='{experienceLevel}'");
+                            return null;
+                        }
+
+                        _quizId = Convert.ToInt32(quizObj);
+                    }
+
+                    // 🔹 Load questions
+                    using (SqlCommand qCmd = new SqlCommand(
+                        "SELECT QuestionID, QuizID, QuestionText FROM QuizQuestions WHERE QuizID=@id ORDER BY QuestionID", con))
+                    {
+                        qCmd.Parameters.AddWithValue("@id", _quizId);
+
+                        using (SqlDataReader qReader = qCmd.ExecuteReader())
+                        {
+                            while (qReader.Read())
+                            {
+                                var q = new QuizQuestion
+                                {
+                                    QuestionID = Convert.ToInt32(qReader["QuestionID"]),
+                                    QuizID = Convert.ToInt32(qReader["QuizID"]),
+                                    QuestionText = qReader["QuestionText"].ToString(),
+                                    Answers = new List<QuizAnswer>()
+                                };
+                                questions.Add(q);
+                            }
+                        }
+                    }
+
+                    // 🔹 Load answers
+                    foreach (var q in questions)
+                    {
+                        using (SqlCommand aCmd = new SqlCommand(
+                            "SELECT AnswerID, QuestionID, AnswerText, IsCorrect FROM QuizAnswers WHERE QuestionID=@qid ORDER BY AnswerID", con))
+                        {
+                            aCmd.Parameters.AddWithValue("@qid", q.QuestionID);
+                            using (SqlDataReader aReader = aCmd.ExecuteReader())
+                            {
+                                while (aReader.Read())
+                                {
+                                    q.Answers.Add(new QuizAnswer
+                                    {
+                                        AnswerID = Convert.ToInt32(aReader["AnswerID"]),
+                                        QuestionID = Convert.ToInt32(aReader["QuestionID"]),
+                                        AnswerText = aReader["AnswerText"].ToString(),
+                                        IsCorrect = Convert.ToBoolean(aReader["IsCorrect"])
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading quiz: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return questions;
+        }
+
         private void StartQuiz_Click(object sender, RoutedEventArgs e)
         {
             WelcomeScreen.Visibility = Visibility.Collapsed;
             QuizScreen.Visibility = Visibility.Visible;
-
             _questionTimer.Start();
             _totalTimer.Start();
         }
@@ -78,29 +159,66 @@ namespace IMS.Views
         private void QuestionTimer_Tick(object sender, EventArgs e)
         {
             _questionTimeRemaining--;
-            ProgressText.Text = $"Question {_currentIndex + 1} of {_questions.Count}  |  Time Left: {_questionTimeRemaining}s";
+            ProgressText.Text = $"Question {_currentIndex + 1} of {_questions.Count} | Time Left: {_questionTimeRemaining}s";
 
             if (_questionTimeRemaining <= 0)
-            {
                 MoveToNextQuestionOrSubmit();
-            }
         }
 
         private void TotalTimer_Tick(object sender, EventArgs e)
         {
             _totalTimeRemaining--;
-
             if (_totalTimeRemaining <= 0)
             {
                 _questionTimer.Stop();
                 _totalTimer.Stop();
-                SubmitQuiz(autoSubmit: true);
+                SubmitQuiz(true);
             }
+        }
+
+        private void DisplayQuestion(int index)
+        {
+            if (index < 0 || index >= _questions.Count) return;
+            _questionTimeRemaining = 15;
+
+            var q = _questions[index];
+            QuestionText.Text = q.QuestionText ?? "";
+            ProgressText.Text = $"Question {index + 1} of {_questions.Count} | Time Left: {_questionTimeRemaining}s";
+
+            OptionsPanel.Children.Clear();
+
+            foreach (var a in q.Answers)
+            {
+                var rb = new RadioButton
+                {
+                    Content = a.AnswerText,
+                    Tag = a.AnswerID,
+                    GroupName = "QuizOptions",
+                    Foreground = System.Windows.Media.Brushes.White,
+                    Margin = new Thickness(0, 6, 0, 6)
+                };
+
+                if (_answers.ContainsKey(index) && _answers[index] == a.AnswerID)
+                    rb.IsChecked = true;
+
+                rb.Checked += (s, e) => _answers[index] = a.AnswerID;
+                OptionsPanel.Children.Add(rb);
+            }
+        }
+
+        private void SaveCurrentSelection()
+        {
+            var selected = OptionsPanel.Children.OfType<RadioButton>().FirstOrDefault(rb => rb.IsChecked == true);
+            if (selected != null)
+                _answers[_currentIndex] = (int)selected.Tag;
+            else if (_answers.ContainsKey(_currentIndex))
+                _answers.Remove(_currentIndex);
         }
 
         private void MoveToNextQuestionOrSubmit()
         {
             SaveCurrentSelection();
+
             if (_currentIndex < _questions.Count - 1)
             {
                 _currentIndex++;
@@ -111,72 +229,8 @@ namespace IMS.Views
             {
                 _questionTimer.Stop();
                 _totalTimer.Stop();
-                SubmitQuiz(autoSubmit: true);
+                SubmitQuiz(true);
             }
-        }
-
-        private void DisplayQuestion(int index)
-        {
-            if (index < 0 || index >= _questions.Count) return;
-
-            _questionTimeRemaining = 15; // reset per-question timer
-
-            Question q = _questions[index];
-            ProgressText.Text = $"Question {index + 1} of {_questions.Count}  |  Time Left: {_questionTimeRemaining}s";
-            QuestionText.Text = q.Text ?? string.Empty;
-
-            OptionsPanel.Children.Clear();
-            for (int i = 0; i < 4; i++)
-            {
-                if (q.Options != null && q.Options.Length > i && !string.IsNullOrEmpty(q.Options[i]))
-                {
-                    RadioButton rb = new RadioButton
-                    {
-                        Content = q.Options[i],
-                        Tag = i,
-                        GroupName = "QuizOptions",
-                        Margin = new Thickness(0, 6, 0, 6),
-                        Foreground = System.Windows.Media.Brushes.White
-                    };
-                    OptionsPanel.Children.Add(rb);
-                }
-            }
-
-            if (_answers.TryGetValue(index, out int saved))
-            {
-                foreach (RadioButton rb in OptionsPanel.Children.OfType<RadioButton>())
-                {
-                    if ((int)rb.Tag == saved)
-                    {
-                        rb.IsChecked = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void SaveCurrentSelection()
-        {
-            int foundIndex = -1;
-            foreach (RadioButton rb in OptionsPanel.Children.OfType<RadioButton>())
-            {
-                if (rb.IsChecked == true)
-                {
-                    foundIndex = (int)rb.Tag;
-                    break;
-                }
-            }
-
-            if (foundIndex >= 0)
-                _answers[_currentIndex] = foundIndex;
-            else
-                _answers.Remove(_currentIndex);
-        }
-
-        private void NextBtn_Click(object sender, RoutedEventArgs e)
-        {
-            SaveCurrentSelection();
-            MoveToNextQuestionOrSubmit();
         }
 
         private void BackBtn_Click(object sender, RoutedEventArgs e)
@@ -190,11 +244,17 @@ namespace IMS.Views
             }
         }
 
+        private void NextBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveCurrentSelection();
+            MoveToNextQuestionOrSubmit();
+        }
+
         private void SubmitBtn_Click(object sender, RoutedEventArgs e)
         {
             _questionTimer.Stop();
             _totalTimer.Stop();
-            SubmitQuiz(autoSubmit: false);
+            SubmitQuiz(false);
         }
 
         private void SubmitQuiz(bool autoSubmit)
@@ -202,33 +262,34 @@ namespace IMS.Views
             SaveCurrentSelection();
 
             int score = 0;
-            for (int i = 0; i < _questions.Count; i++)
+            foreach (var i in Enumerable.Range(0, _questions.Count))
             {
-                if (_answers.TryGetValue(i, out int selected))
+                if (_answers.ContainsKey(i))
                 {
-                    if (selected == _questions[i].CorrectOptionIndex)
+                    int selectedAnswerId = _answers[i];
+                    var selectedAnswer = _questions[i].Answers.FirstOrDefault(a => a.AnswerID == selectedAnswerId);
+                    if (selectedAnswer != null && selectedAnswer.IsCorrect)
                         score++;
                 }
             }
 
             bool passed = score >= (_questions.Count / 2);
-            DateTime submittedOn = DateTime.Now;
 
             try
             {
                 using (SqlConnection conn = new SqlConnection(DbChecker.ConnectionString))
                 {
                     conn.Open();
-                    string query = @"
-                        INSERT INTO QuizResult (ApplicantId, Score, TotalQuestions, Passed, SubmittedOn)
-                        VALUES (@ApplicantId, @Score, @TotalQuestions, @Passed, @SubmittedOn)";
+                    string query = @"INSERT INTO QuizResult (ApplicantId, QuizID, Score, TotalQuestions, Passed, SubmittedOn)
+                                     VALUES (@ApplicantId, @QuizID, @Score, @Total, @Passed, GETDATE())";
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@ApplicantId", _applicantId);
+                        cmd.Parameters.AddWithValue("@QuizID", _quizId);
                         cmd.Parameters.AddWithValue("@Score", score);
-                        cmd.Parameters.AddWithValue("@TotalQuestions", _questions.Count);
+                        cmd.Parameters.AddWithValue("@Total", _questions.Count);
                         cmd.Parameters.AddWithValue("@Passed", passed);
-                        cmd.Parameters.AddWithValue("@SubmittedOn", submittedOn);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -238,21 +299,13 @@ namespace IMS.Views
                     autoSubmit
                         ? $"Time’s up! Quiz auto-submitted.\nScore: {score}/{_questions.Count}"
                         : $"Quiz completed!\nScore: {score}/{_questions.Count}",
-                    "Quiz Result",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
+                    "Quiz Result", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                Window parentWindow = Window.GetWindow(this);
-                if (parentWindow != null)
-                {
-                    parentWindow.Close();
-                }
+                Window.GetWindow(this)?.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error saving quiz result: " + ex.Message,
-                    "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error saving quiz result: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

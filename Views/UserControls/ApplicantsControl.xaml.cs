@@ -272,8 +272,9 @@ namespace IMS.Views
 
                 // After successful insert and applicant.Id is set:
                 int applicantId = applicant.Id;
-                string experience = applicant.ExperienceDuration ?? string.Empty;
-                string designation = DesignationBox.SelectedItem?.ToString() ?? string.Empty;
+                string experience = ExperienceBox.SelectedValue?.ToString() ?? applicant.ExperienceDuration ?? string.Empty;
+
+                string designation = DesignationBox.SelectedValue?.ToString() ?? string.Empty;
 
                 // Create the quiz control
                 IMS.Views.QuizControl quiz = new IMS.Views.QuizControl(applicantId, experience, designation);

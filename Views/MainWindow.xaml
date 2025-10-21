@@ -40,7 +40,7 @@
                         <Image Source="/Photos/applicant.png"  Width="70" Height="70" Margin="0,0,0,15"/>
                     </Border>
                     <Button Content="Enter" Width="120" Height="40"
-                            Background="#7CFC00" Foreground="Black"
+                            Background="#7CFC00" Foreground="Black" Cursor="Hand"
                             FontSize="16" FontWeight="Bold" Click="btnApplicant_Click"/>
                 </StackPanel>
             </Border>
@@ -51,7 +51,7 @@
                                HorizontalAlignment="Center" Margin="0,0,0,10"/>
                     <Image Source="/Photos/admin.png"  Width="70" Height="70" Margin="0,0,0,15"/>
                     <Button Content="Login" Width="120" Height="40" Click="Login_click"
-                            Background="#7CFC00" Foreground="Black"
+                            Background="#7CFC00" Foreground="Black" Cursor="Hand"
                             FontSize="16" FontWeight="Bold"/>
                 </StackPanel>
             </Border>
