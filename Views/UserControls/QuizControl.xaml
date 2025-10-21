@@ -55,13 +55,25 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <Border Background="#121212" CornerRadius="6" Padding="10,8">
+                        <Border x:Name="Border" Background="#121212" CornerRadius="6" Padding="10,8">
                             <StackPanel Orientation="Horizontal">
-                                <Ellipse Width="16" Height="16" Stroke="#92d400" StrokeThickness="1.5"
-                                         Margin="0,0,10,0"/>
+                                <Ellipse x:Name="Circle" Width="16" Height="16" Stroke="#92d400" StrokeThickness="1.5"
+                                 Margin="0,0,10,0"/>
                                 <ContentPresenter/>
                             </StackPanel>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover effect -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#1E1E1E"/>
+                            </Trigger>
+
+                            <!-- Checked effect -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Circle" Property="Fill" Value="#92d400"/>
+                                <Setter TargetName="Border" Property="Background" Value="#202020"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
