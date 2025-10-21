@@ -102,6 +102,13 @@
                            Text="Question 1 of 10"
                            Margin="0,0,0,8"/>
 
+                <TextBlock x:Name="TotalTimeText"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           Foreground="#94a3b8"
+                           Text="Total Time Left: 00:00"
+                           Margin="0,0,0,6"/>
+                
                 <!-- Timer progress bar -->
                 <ProgressBar x:Name="TimerBar"
                              Height="8"
@@ -117,7 +124,7 @@
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,20,0,0">
                 <StackPanel>
                     <TextBlock x:Name="QuestionText"
-                               FontSize="18"
+                               FontSize="24"
                                Foreground="White"
                                FontWeight="SemiBold"
                                TextWrapping="Wrap"
