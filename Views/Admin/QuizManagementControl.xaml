@@ -44,13 +44,12 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <ContentPresenter x:Name="ContentSite"
-                                                IsHitTestVisible="False"
-                                                Content="{TemplateBinding SelectionBoxItem}"
-                                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                                Margin="{TemplateBinding Padding}"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left"/>
+                                    <TextBlock Text="{Binding SelectedItem.Title, 
+                                           RelativeSource={RelativeSource TemplatedParent}}" 
+                                           Margin="{TemplateBinding Padding}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Foreground="{TemplateBinding Foreground}"/>
 
                                     <ToggleButton Grid.Column="1"
                                             x:Name="ToggleButton"
