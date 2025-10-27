@@ -148,6 +148,23 @@
                                     <TextBlock Text="Applied For (Designation) *" Style="{StaticResource FieldLabel}"/>
                                     <ComboBox x:Name="DesignationBox" ItemsSource="{StaticResource AppliedForOptions}" 
                                               SelectedIndex="0" DisplayMemberPath="Title" SelectedValuePath="Title"/>
+
+                                    <!-- Resume Upload Section -->
+                                    <TextBlock Text="Resume Upload" Style="{StaticResource FieldLabel}" Margin="0,20,0,6"/>
+                                    <Border Background="#1E293B" CornerRadius="12" Padding="20" BorderBrush="#334155" BorderThickness="1" Margin="0,0,0,16">
+                                        <StackPanel>
+                                            <TextBlock Text="📄 Upload Your Resume" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                            <TextBlock Text="Accepted formats: PDF, DOCX, DOC (Max 10MB)" Foreground="#94A3B8" FontSize="11" Margin="0,0,0,12"/>
+                                            <TextBlock x:Name="ResumeFileNameText" Text="No file selected" Foreground="#64748B" FontSize="13" Margin="0,0,0,12"/>
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button x:Name="UploadResumeBtn" Click="UploadResumeBtn_Click" Content="📎 Choose File" Background="#3B82F6" Foreground="White" FontWeight="SemiBold" FontSize="13" Height="40" Width="140" Margin="0,0,12,0" BorderThickness="0" Cursor="Hand" Style="{StaticResource NavButtonStyle}"/>
+                                                <Button x:Name="RemoveResumeBtn" Click="RemoveResumeBtn_Click" Content="✕ Remove" Background="#EF4444" Foreground="White" FontWeight="SemiBold" FontSize="13" Height="40" Width="120" BorderThickness="0" Cursor="Hand" Visibility="Collapsed" Style="{StaticResource NavButtonStyle}"/>
+                                            </StackPanel>
+
+                                            <TextBlock x:Name="ResumeUploadStatus" Text="" Foreground="#10B981" FontSize="12" FontWeight="SemiBold" Margin="0,12,0,0"/>
+                                        </StackPanel>
+                                    </Border>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
@@ -166,81 +183,12 @@
                                     <TextBlock Text="Email *" Style="{StaticResource FieldLabel}"/>
                                     <TextBox x:Name="EmailBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
-                                    <!-- Add this section in your Step1Panel, after the Email field -->
-
-                                    <!-- Resume Upload Section -->
-                                    <TextBlock Text="Resume Upload" 
-                                               Style="{StaticResource FieldLabel}"
-                                               Margin="0,20,0,6"/>
-
-                                    <Border Background="#1E293B" 
-                                            CornerRadius="12" 
-                                            Padding="20"
-                                            BorderBrush="#334155"
-                                            BorderThickness="1"
-                                            Margin="0,0,0,16">
-                                        <StackPanel>
-                                            <TextBlock Text="📄 Upload Your Resume" 
-                                               Foreground="White" 
-                                               FontSize="14" 
-                                               FontWeight="SemiBold"
-                                               Margin="0,0,0,8"/>
-
-                                            <TextBlock Text="Accepted formats: PDF, DOCX, DOC (Max 10MB)" 
-                                               Foreground="#94A3B8" 
-                                               FontSize="11"
-                                               Margin="0,0,0,12"/>
-
-                                            <TextBlock x:Name="ResumeFileNameText"
-                                               Text="No file selected"
-                                               Foreground="#64748B"
-                                               FontSize="13"
-                                               Margin="0,0,0,12"/>
-
-                                            <StackPanel Orientation="Horizontal">
-                                                <Button x:Name="UploadResumeBtn"
-                                                Click="UploadResumeBtn_Click"
-                                                Content="📎 Choose File"
-                                                Background="#3B82F6"
-                                                Foreground="White"
-                                                FontWeight="SemiBold"
-                                                FontSize="13"
-                                                Height="40"
-                                                Width="140"
-                                                Margin="0,0,12,0"
-                                                BorderThickness="0"
-                                                Cursor="Hand"
-                                                Style="{StaticResource NavButtonStyle}"/>
-
-                                                <Button x:Name="RemoveResumeBtn"
-                                                Click="RemoveResumeBtn_Click"
-                                                Content="✕ Remove"
-                                                Background="#EF4444"
-                                                Foreground="White"
-                                                FontWeight="SemiBold"
-                                                FontSize="13"
-                                                Height="40"
-                                                Width="120"
-                                                BorderThickness="0"
-                                                Cursor="Hand"
-                                                Visibility="Collapsed"
-                                                Style="{StaticResource NavButtonStyle}"/>
-                                            </StackPanel>
-
-                                            <TextBlock x:Name="ResumeUploadStatus"
-                                               Text=""
-                                               Foreground="#10B981"
-                                               FontSize="12"
-                                               FontWeight="SemiBold"
-                                               Margin="0,12,0,0"/>
-                                        </StackPanel>
-                                    </Border>
+                                    <TextBlock Text="Address *" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox x:Name="AddressBox" Style="{StaticResource RoundedTextBoxStyle}" Height="135" AcceptsReturn="True" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </Grid>
 
-                            <TextBlock Text="Address *" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="AddressBox" Style="{StaticResource RoundedTextBoxStyle}"
-                                     Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
+                            
                         </StackPanel>
                     </Border>
                 </StackPanel>
