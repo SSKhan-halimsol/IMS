@@ -8,8 +8,6 @@ namespace IMS.Data
         public AppDbContext() : base("IMSConnection") { }
 
         public DbSet<Admin> Admins { get; set; }
-        public DbSet<Interviewer> Interviewers { get; set; }
-        public DbSet<Interview> Interviews { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

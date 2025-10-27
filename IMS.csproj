@@ -115,7 +115,6 @@
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Designation.cs" />
-    <Compile Include="Models\Interviewer.cs" />
     <Compile Include="Converters\StepToVisibilityConverter.cs" />
     <Compile Include="Models\Quiz.cs" />
     <Compile Include="Models\QuizAnswer.cs" />
@@ -237,8 +236,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Applicant.cs" />
-    <Compile Include="Models\Interview.cs" />
-    <Compile Include="Models\InterviewResult.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
