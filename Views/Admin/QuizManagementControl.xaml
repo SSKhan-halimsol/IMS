@@ -19,6 +19,82 @@
             <sys:String>Angular developer</sys:String>
             <sys:String>PHP developer</sys:String>
         </x:Array>
+        <!-- Dark ComboBox Style -->
+        <Style x:Key="DarkComboBoxStyle2" TargetType="ComboBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#F1F5F9"/>
+            <Setter Property="BorderBrush" Value="#475569"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{TemplateBinding SelectionBoxItem}"
+                                       Margin="{TemplateBinding Padding}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"
+                                       Foreground="{TemplateBinding Foreground}"/>
+
+                                    <ToggleButton Grid.Column="1"
+                                        x:Name="ToggleButton"
+                                        Focusable="False"
+                                        IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                        ClickMode="Press"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Width="30">
+                                        <Path Data="M 0 0 L 4 4 L 8 0 Z"
+                                  Fill="#94A3B8"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                                    </ToggleButton>
+                                </Grid>
+                            </Border>
+
+                            <Popup x:Name="Popup"
+                       Placement="Bottom"
+                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                       AllowsTransparency="True"
+                       Focusable="False"
+                       PopupAnimation="Slide">
+                                <Border Background="#1E293B"
+                            BorderBrush="#14B8A6"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Margin="0,4,0,0"
+                            MaxHeight="200">
+                                    <ScrollViewer Margin="0" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#14B8A6"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#14B8A6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <!-- Dark ComboBox Style -->
         <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
@@ -427,6 +503,7 @@
                                 ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}"/>
                         </StackPanel>
                         
+                        <!-- Experience level -->
                         <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,12,16">
                             <TextBlock Text="Experience Level" 
                                        Foreground="#94A3B8" 
@@ -436,7 +513,7 @@
                             <ComboBox x:Name="ExperienceBox" 
                                       ItemsSource="{StaticResource ExperienceRating}" 
                                       SelectedIndex="0"
-                                      Style="{StaticResource DarkComboBoxStyle}"
+                                      Style="{StaticResource DarkComboBoxStyle2}"
                                       ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}"/> 
                         </StackPanel>
 
@@ -511,8 +588,8 @@
             <!-- Questions and Answers Grid -->
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2.25*"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Questions Card -->
@@ -542,7 +619,7 @@
 
                         <!-- Questions ListBox -->
                         <ListBox x:Name="lstQuestions"
-                                 Height="300"
+                                 Height="400"
                                  DisplayMemberPath="QuestionText"
                                  Style="{StaticResource ModernListBox}"
                                  SelectionChanged="lstQuestions_SelectionChanged"/>
@@ -556,7 +633,7 @@
                                     Style="{StaticResource ModernButton}"
                                     Click="AddQuestion_Click"/>
                             <Button Content="🗑️ Remove Question" 
-                                    Width="150" 
+                                    Width="165" 
                                     Height="38"
                                     Margin="12,0,0,0"
                                     Style="{StaticResource DeleteButton}"

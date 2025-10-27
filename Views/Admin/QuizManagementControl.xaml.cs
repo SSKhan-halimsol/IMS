@@ -366,8 +366,6 @@ namespace IMS.Views.Admin
                             delQ.Parameters.AddWithValue("@id", question.QuestionID);
                             delQ.ExecuteNonQuery();
 
-                            MessageBox.Show($"Question deleted successfully!\n\n{answersDeleted} answer(s) were also deleted.",
-                                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
 
                         LoadQuestions();
@@ -435,6 +433,11 @@ namespace IMS.Views.Admin
                 selectedQuestion = q;
                 txtQuestionText.Text = q.QuestionText;
                 LoadAnswers(q.QuestionID);
+                txtQuestionText.Focus();
+
+                txtQuestionText.CaretIndex = txtQuestionText.Text.Length;
+
+                txtQuestionText.BringIntoView();
             }
             else
             {
