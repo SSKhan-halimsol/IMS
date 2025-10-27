@@ -68,6 +68,114 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin" Value="0,0,0,20"/>
         </Style>
+        <!-- Dark ComboBox Style -->
+        <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#F1F5F9"/>
+            <Setter Property="BorderBrush" Value="#475569"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding SelectedItem.Title, 
+                                           RelativeSource={RelativeSource TemplatedParent}}" 
+                                           Margin="{TemplateBinding Padding}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Foreground="{TemplateBinding Foreground}"/>
+
+                                    <ToggleButton Grid.Column="1" x:Name="ToggleButton" Focusable="False" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
+                                          ClickMode="Press" Background="Transparent" BorderThickness="0" Width="30">
+                                        <Path Data="M 0 0 L 4 4 L 8 0 Z" Fill="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </ToggleButton>
+                                </Grid>
+                            </Border>
+
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Border Background="#1E293B" BorderBrush="#14B8A6" BorderThickness="1" CornerRadius="4" Margin="0,4,0,0" MaxHeight="200">
+                                    <ScrollViewer Margin="0" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#14B8A6"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#14B8A6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark ComboBox Style -->
+        <Style x:Key="DarkComboBoxStyle2" TargetType="ComboBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#F1F5F9"/>
+            <Setter Property="BorderBrush" Value="#475569"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding Path=SelectionBoxItem, RelativeSource={RelativeSource TemplatedParent}}"
+                                                Margin="{TemplateBinding Padding}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Foreground="{TemplateBinding Foreground}"/>
+
+                                    <ToggleButton Grid.Column="1" x:Name="ToggleButton" Focusable="False" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                  ClickMode="Press" Background="Transparent" BorderThickness="0" Width="30">
+                                        <Path Data="M 0 0 L 4 4 L 8 0 Z" Fill="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </ToggleButton>
+                                </Grid>
+                            </Border>
+
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Border Background="#1E293B" BorderBrush="#14B8A6" BorderThickness="1" CornerRadius="4" Margin="0,4,0,0" MaxHeight="200">
+                                    <ScrollViewer Margin="0" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#14B8A6"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#14B8A6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="0">
@@ -143,11 +251,11 @@
                                     <TextBox x:Name="PhoneBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
                                     <TextBlock Text="Marital Status *" Style="{StaticResource FieldLabel}"/>
-                                    <ComboBox x:Name="MaritalStatusBox" ItemsSource="{StaticResource MaritalStatusOptions}" SelectedIndex="0"/>
+                                    <ComboBox x:Name="MaritalStatusBox" ItemsSource="{StaticResource MaritalStatusOptions}" SelectedIndex="0" Style="{StaticResource DarkComboBoxStyle2}"/>
 
                                     <TextBlock Text="Applied For (Designation) *" Style="{StaticResource FieldLabel}"/>
                                     <ComboBox x:Name="DesignationBox" ItemsSource="{StaticResource AppliedForOptions}" 
-                                              SelectedIndex="0" DisplayMemberPath="Title" SelectedValuePath="Title"/>
+                                              SelectedIndex="0" DisplayMemberPath="Title" SelectedValuePath="Title" Style="{StaticResource DarkComboBoxStyle}"/>
 
                                     <!-- Resume Upload Section -->
                                     <TextBlock Text="Resume Upload" Style="{StaticResource FieldLabel}" Margin="0,20,0,6"/>
@@ -216,16 +324,16 @@
 
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="How do you rate yourself in OOP?" Style="{StaticResource FieldLabel}"/>
-                                    <ComboBox x:Name="OopRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0"/>
+                                    <ComboBox x:Name="OopRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0" Style="{StaticResource DarkComboBoxStyle2}"/>
 
                                     <TextBlock Text="How do you rate yourself in SQL?" Style="{StaticResource FieldLabel}"/>
-                                    <ComboBox x:Name="SqlRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0"/>
+                                    <ComboBox x:Name="SqlRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0" Style="{StaticResource DarkComboBoxStyle2}"/>
 
                                     <TextBlock Text="How do you rate yourself in UI?" Style="{StaticResource FieldLabel}"/>
-                                    <ComboBox x:Name="UiRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0"/>
+                                    <ComboBox x:Name="UiRatingBox" ItemsSource="{StaticResource FiveRatings}" SelectedIndex="0" Style="{StaticResource DarkComboBoxStyle2}"/>
 
                                     <TextBlock Text="Are you currently employed?" Style="{StaticResource FieldLabel}"/>
-                                    <ComboBox x:Name="EmployedBox" ItemsSource="{StaticResource YesNoOptions}" SelectedIndex="0"/>
+                                    <ComboBox x:Name="EmployedBox" ItemsSource="{StaticResource YesNoOptions}" SelectedIndex="0" Style="{StaticResource DarkComboBoxStyle2}"/>
 
                                     <TextBlock Text="Your current company (if any)" Style="{StaticResource FieldLabel}"/>
                                     <TextBox x:Name="CompanyBox" Style="{StaticResource RoundedTextBoxStyle}"/>
@@ -298,13 +406,13 @@
                                     <TextBox x:Name="FrameworkBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
                                     <TextBlock Text="Your experience duration" Style="{StaticResource FieldLabel}"/>
-                                    <ComboBox x:Name="ExperienceBox" ItemsSource="{StaticResource ExperienceRating}" SelectedIndex="0"/>
+                                    <ComboBox x:Name="ExperienceBox" ItemsSource="{StaticResource ExperienceRating}" SelectedIndex="0" Style="{StaticResource DarkComboBoxStyle2}"/>
 
                                     <TextBlock Text="Your current salary" Style="{StaticResource FieldLabel}"/>
                                     <TextBox x:Name="SalaryBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
                                     <TextBlock Text="How much willing do you have for this job?" Style="{StaticResource FieldLabel}"/>
-                                    <ComboBox x:Name="WillingnessBox" ItemsSource="{StaticResource WillingnessOptions}" SelectedIndex="0"/>
+                                    <ComboBox x:Name="WillingnessBox" ItemsSource="{StaticResource WillingnessOptions}" SelectedIndex="0" Style="{StaticResource DarkComboBoxStyle2}"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">

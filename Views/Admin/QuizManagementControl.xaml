@@ -19,6 +19,7 @@
             <sys:String>Angular developer</sys:String>
             <sys:String>PHP developer</sys:String>
         </x:Array>
+        
         <!-- Dark ComboBox Style -->
         <Style x:Key="DarkComboBoxStyle2" TargetType="ComboBox">
             <Setter Property="Background" Value="#1E293B"/>
