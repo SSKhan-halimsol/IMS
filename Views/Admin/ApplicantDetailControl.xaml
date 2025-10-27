@@ -376,13 +376,16 @@
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                                 <TextBlock Text="Applicant Quiz" Foreground="White" FontSize="15" FontWeight="Bold" Margin="0,0,0,4"/>
                                                 <TextBlock Text="                   " ></TextBlock>
-                                                <Button Background="{StaticResource GreenGradient}" Foreground="White" FontWeight="SemiBold" FontSize="13" Height="35" Width="120" BorderThickness="0" Cursor="Hand" Style="{StaticResource ActionButton}">
+                                                <Button Background="{StaticResource GreenGradient}" Click="ViewQuizDetails_Click" Foreground="White" FontWeight="SemiBold" FontSize="13" Height="35" Width="120" BorderThickness="0" Cursor="Hand" Style="{StaticResource ActionButton}">
                                                     <TextBlock Text="Quiz Details" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                                                 </Button>
                                             </StackPanel>
                                             
                                         </StackPanel>
-                                        <TextBlock Text="Quiz Marks: " Foreground="#94A3B8"></TextBlock>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Quiz Marks: " Foreground="#94A3B8"></TextBlock>
+                                            <TextBlock x:Name="QuizMarksText" Text="Loading..." Foreground="White" FontWeight="Bold" Margin="6,0,0,0"/>
+                                        </StackPanel>
                                     </StackPanel>
                                     </Border>
                                 </Grid>

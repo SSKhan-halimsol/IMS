@@ -12,6 +12,9 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon2.ico</ApplicationIcon>
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -143,6 +146,9 @@
     <Compile Include="Views\Admin\HomeControl.xaml.cs">
       <DependentUpon>HomeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Admin\QuizDetailsWindow.xaml.cs">
+      <DependentUpon>QuizDetailsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Admin\QuizManagementControl.xaml.cs">
       <DependentUpon>QuizManagementControl.xaml</DependentUpon>
     </Compile>
@@ -178,6 +184,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Admin\HomeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Admin\QuizDetailsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -286,8 +296,9 @@
     <Resource Include="Photos\applicant.png" />
     <Resource Include="Circle1-removebg-preview 1.png" />
     <Resource Include="Circle1-removebg-preview 2.png" />
-    <Resource Include="Photos\logout.png" />
     <Resource Include="Photos\back.png" />
+    <Resource Include="icon2.ico" />
+    <Resource Include="Photos\logout.png" />
     <Content Include="SQL\001_CreateTables.sql" />
     <Content Include="SQL\002_DefaultData.sql" />
   </ItemGroup>

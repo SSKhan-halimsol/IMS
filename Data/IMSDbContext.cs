@@ -13,6 +13,7 @@ namespace IMS.Data
         {
         }
         public DbSet<IMS.Models.Applicant> Applicants { get; set; }
+        public DbSet<QuizResult> QuizResult { get; set; }
     }
 
 }

@@ -1,10 +1,12 @@
 ﻿using IMS.Data;
 using IMS.Models;
-using System;
-using System.Windows;
 using Microsoft.Win32;
+using System;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -26,6 +28,7 @@ namespace IMS.Views.Admin
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateResumeDisplay();
+            LoadQuizSummary();
 
             if (!string.IsNullOrEmpty(_applicant.Status) &&
                 (_applicant.Status == "Accepted" || _applicant.Status == "Rejected"))
@@ -33,6 +36,74 @@ namespace IMS.Views.Admin
                 DisableActionButtons();
                 UpdateStatusDisplay();
             }
+        }
+
+        private void LoadQuizSummary()
+        {
+            try
+            {
+                using (var db = new IMSDbContext())
+                {
+                    string sql = "SELECT TOP 1 Score, TotalQuestions FROM QuizResult WHERE ApplicantId = @p0";
+                    var quiz = db.Database.SqlQuery<QuizSummaryTemp>(sql, _applicant.Id).FirstOrDefault();
+
+                    if (quiz != null)
+                        QuizMarksText.Text = $"{quiz.Score} / {quiz.TotalQuestions}";
+                    else
+                        QuizMarksText.Text = "No quiz attempted";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading quiz summary:\n\n{ex.InnerException?.Message ?? ex.Message}");
+            }
+        }
+
+        // ✅ Helper class for raw SQL result mapping
+        private class QuizSummaryTemp
+        {
+            public int Score { get; set; }
+            public int TotalQuestions { get; set; }
+        }
+
+        private void ViewQuizDetails_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using (var db = new IMSDbContext())
+                {
+                    var sql = "SELECT TOP 1 Score, TotalQuestions, Passed, SubmittedOn FROM QuizResult WHERE ApplicantId = @p0";
+                    var quiz = db.Database.SqlQuery<QuizTemp>(sql, _applicant.Id).FirstOrDefault();
+
+                    if (quiz != null)
+                    {
+                        var detailsWindow = new QuizDetailsWindow(quiz.Score, quiz.TotalQuestions, quiz.Passed, quiz.SubmittedOn);
+                        detailsWindow.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("No quiz record found for this applicant.",
+                                        "Information",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading quiz details:\n\n{ex.InnerException?.Message ?? ex.Message}",
+                                "Error",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error);
+            }
+        }
+
+        private class QuizTemp
+        {
+            public int Score { get; set; }
+            public int TotalQuestions { get; set; }
+            public bool Passed { get; set; }
+            public DateTime SubmittedOn { get; set; }
         }
 
         /// <summary>
