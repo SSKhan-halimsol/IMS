@@ -1,8 +1,11 @@
-﻿namespace IMS.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace IMS.Models
 {
-    internal class User
+    public class User
     {
-        int Id { get; set; }
+        [Key]
+        public int Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
     }

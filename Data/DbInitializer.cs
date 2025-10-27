@@ -1,54 +1,32 @@
 ﻿using IMS.Models;
+using System;
 using System.Data.Entity;
 using System.Linq;
 
 namespace IMS.Data
 {
-    public class DbInitializer : CreateDatabaseIfNotExists<AppDbContext>
+    public class DbInitializer : CreateDatabaseIfNotExists<IMSDbContext>
     {
-        protected override void Seed(AppDbContext context)
+        protected override void Seed(IMSDbContext context)
         {
-            EnsureAdmin(context);
-            base.Seed(context);
-        }
-        public static void Initialize()
-        {
-            using (var context = new AppDbContext())
+            // ✅ Seed default admin
+            if (!context.User.Any())
             {
-                context.Database.Initialize(force: true);
-                EnsureAdmin(context);
-            }
-        }
-
-        private static void EnsureAdmin(AppDbContext context)
-        {
-            const string adminUsername = "admin";
-            const string adminPassword = "admin123";
-            if (context.Set<Admin>().Any(a => a.Username == adminUsername))
-                return;
-
-            var adminEntity = new Admin();
-            var adminType = typeof(Admin);
-            var hasPasswordHash = adminType.GetProperty("PasswordHash") != null;
-            var hasPassword = adminType.GetProperty("Password") != null;
-
-            if (hasPasswordHash)
-            {
-                adminEntity.GetType().GetProperty("Username").SetValue(adminEntity, adminUsername);
-                adminEntity.GetType().GetProperty("PasswordHash").SetValue(adminEntity, adminPassword);
-            }
-            else if (hasPassword)
-            {
-                adminEntity.GetType().GetProperty("Username").SetValue(adminEntity, adminUsername);
-                adminEntity.GetType().GetProperty("Password").SetValue(adminEntity, adminPassword);
-            }
-            else
-            {
-                throw new System.InvalidOperationException("Admin model does not contain 'Password' or 'PasswordHash' properties. Update the Admin class to include one of these.");
+                context.User.Add(new User
+                {
+                    Username = "admin",
+                    Password = "admin123"
+                });
             }
 
-            context.Set<Admin>().Add(adminEntity);
+            // ✅ Optionally seed sample quiz and designation
+            if (!context.Designations.Any())
+            {
+                context.Designations.Add(new Designation { Title = ".NET Developer" });
+            }
+
             context.SaveChanges();
+            base.Seed(context);
         }
     }
 }

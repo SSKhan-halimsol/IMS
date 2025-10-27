@@ -5,7 +5,6 @@ namespace IMS.Helpers
 {
     public static class SecurityHelper
     {
-        // ✅ update with your real SQL Server details
         private static readonly string connectionString =
             "Server=192.168.1.188;Database=IMS;User Id=sa;Password=123456;";
 

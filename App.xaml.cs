@@ -1,11 +1,41 @@
-﻿using System.Windows;
+﻿using IMS.Data;
+using IMS.Views;
+using System;
+using System.Data.Entity;
+using System.Windows;
 
-public partial class App : Application
+namespace IMS
 {
-    protected override void OnStartup(StartupEventArgs e)
+    public partial class App : Application
     {
-        base.OnStartup(e);
-        SplashScreen splash = new SplashScreen("Resources/splash.png");
-        splash.Show(true);
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            try
+            {
+                Database.SetInitializer(new DbInitializer());
+
+                using (var context = new IMSDbContext())
+                {
+                    context.Database.Initialize(force: false);
+                }
+
+                var splash = new SplashScreen("Photos/splash.png");
+                splash.Show(autoClose: true);
+
+
+                var mainWindow = new MainWindow();
+                mainWindow.Show();
+
+                Console.WriteLine("✅ Database initialized successfully.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Database initialization failed: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Current.Shutdown();
+            }
+        }
     }
 }

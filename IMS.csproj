@@ -111,7 +111,6 @@
     <Compile Include="Data\DesignationRepository.cs" />
     <Compile Include="Data\IMSDbContext.cs" />
     <Compile Include="Helpers\EqualityConverter.cs" />
-    <Compile Include="Helpers\QuizLoader.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Designation.cs" />

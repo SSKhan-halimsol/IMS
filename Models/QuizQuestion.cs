@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace IMS.Models
 {
     public class QuizQuestion
     {
+        [Key]
         public int QuestionID { get; set; }
         public int QuizID { get; set; }
         public string QuestionText { get; set; }
