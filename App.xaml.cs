@@ -24,10 +24,6 @@ namespace IMS
                 var splash = new SplashScreen("Photos/splash.png");
                 splash.Show(autoClose: true);
 
-
-                var mainWindow = new MainWindow();
-                mainWindow.Show();
-
                 Console.WriteLine("✅ Database initialized successfully.");
             }
             catch (Exception ex)

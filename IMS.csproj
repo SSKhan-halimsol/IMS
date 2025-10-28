@@ -295,6 +295,7 @@
     <Resource Include="Photos\back.png" />
     <Resource Include="icon2.ico" />
     <Resource Include="Photos\logout.png" />
+    <Resource Include="icon.ico" />
     <Content Include="SQL\001_CreateTables.sql" />
     <Content Include="SQL\002_DefaultData.sql" />
   </ItemGroup>
