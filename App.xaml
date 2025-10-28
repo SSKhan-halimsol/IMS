@@ -6,8 +6,15 @@
              StartupUri="Views/SplashWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            
-            
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Core Material Design styles -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+
+                <!-- DatePicker styling -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DatePicker.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
             <!-- Sidebar Navigation Buttons -->
             <Style x:Key="NavigButtonStyle" TargetType="Button">
                 <Setter Property="Margin" Value="15,5"/>
@@ -260,7 +267,7 @@
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="6">
+                            CornerRadius="12">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>

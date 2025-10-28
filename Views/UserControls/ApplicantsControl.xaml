@@ -283,7 +283,9 @@
                                     <TextBox x:Name="FatherProfessionBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
                                     <TextBlock Text="Date *" Style="{StaticResource FieldLabel}"/>
-                                    <DatePicker x:Name="DateBox" Style="{StaticResource RoundedDatePickerStyle}"/>
+                                    <DatePicker x:Name="DateBox" materialDesign:HintAssist.Hint="Select Date" SelectedDate="{x:Static sys:DateTime.Now}" 
+                                                Style="{StaticResource MaterialDesignDatePicker}" Foreground="White" Background="#1A1E33" 
+                                                BorderBrush="#2C3254" Padding="6" Width="340" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
                                     <TextBlock Text="Age *" Style="{StaticResource FieldLabel}"/>
                                     <TextBox x:Name="AgeBox" Style="{StaticResource RoundedTextBoxStyle}"/>
@@ -292,7 +294,7 @@
                                     <TextBox x:Name="EmailBox" Style="{StaticResource RoundedTextBoxStyle}"/>
 
                                     <TextBlock Text="Address *" Style="{StaticResource FieldLabel}"/>
-                                    <TextBox x:Name="AddressBox" Style="{StaticResource RoundedTextBoxStyle}" Height="135" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                    <TextBox x:Name="AddressBox" Style="{StaticResource RoundedTextBoxStyle}" Height="180" AcceptsReturn="True" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </Grid>
 
