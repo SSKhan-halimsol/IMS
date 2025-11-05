@@ -67,14 +67,15 @@ namespace IMS.Views
                         return;
                     }
 
-                    // Create Resumes directory if it doesn't exist
-                    string resumesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resumes");
-                    if (!Directory.Exists(resumesFolder))
-                    {
-                        Directory.CreateDirectory(resumesFolder);
-                    }
+                    // ✅ Use a user-accessible folder instead of AppDomain.BaseDirectory
+                    string userFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    string resumesFolder = Path.Combine(userFolder, "IMS_Resumes");
 
-                    // Generate unique filename
+                    // Create folder if it doesn’t exist
+                    if (!Directory.Exists(resumesFolder))
+                        Directory.CreateDirectory(resumesFolder);
+
+                    // Generate a safe and unique filename
                     string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
                     string safeFileName = Path.GetFileNameWithoutExtension(selectedFile)
                         .Replace(" ", "_")
@@ -83,7 +84,7 @@ namespace IMS.Views
                     string newFileName = $"{safeFileName}_{timestamp}{extension}";
                     string destinationPath = Path.Combine(resumesFolder, newFileName);
 
-                    // Copy file to Resumes folder
+                    // Copy the file to the new location
                     File.Copy(selectedFile, destinationPath, true);
                     _resumeFilePath = destinationPath;
 

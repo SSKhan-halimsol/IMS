@@ -307,7 +307,7 @@
                         <!-- Right Column - Cards -->
                         <StackPanel Grid.Column="2" Margin="8,0,0,0">
                             <!-- Resume Section -->
-                            <Border Background="#1E293B" CornerRadius="8" Padding="10" Margin="0,0,0,8" BorderBrush="#334155" BorderThickness="1">
+                            <Border Background="#1E293B" Height="120" CornerRadius="8" Padding="10" Margin="0,0,0,8" BorderBrush="#334155" BorderThickness="1">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                         <Border Background="{StaticResource PurpleGradient}" Width="30" Height="30" CornerRadius="15" Margin="0,0,8,0">
@@ -319,9 +319,9 @@
                                         </StackPanel>
                                     </StackPanel>
 
-                                    <TextBlock x:Name="ResumeFileNameText" Foreground="LightGray" FontStyle="Italic" FontSize="9" Margin="0,0,0,6"/>
+                                    <TextBlock x:Name="ResumeFileNameText" Foreground="LightGray" FontStyle="Italic" FontSize="12" Margin="0,0,0,6"/>
 
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                         <Button x:Name="ViewResumeBtn" Click="ViewResume_Click" Background="{StaticResource BlueGradient}" Foreground="White" FontWeight="SemiBold" FontSize="15" Height="25" Padding="8,0" Margin="0,0,4,0" BorderThickness="0" Cursor="Hand" Style="{StaticResource ActionButton}">
                                             <TextBlock Text="👁 View" VerticalAlignment="Center"/>
                                         </Button>
@@ -336,7 +336,7 @@
                             </Border>
 
                             <!-- Quiz Section -->
-                            <Border Background="#1E293B" CornerRadius="8" Padding="10" BorderBrush="#334155" BorderThickness="1">
+                            <Border Background="#1E293B" Height="120" CornerRadius="8" Padding="10" BorderBrush="#334155" BorderThickness="1">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                         <Border Background="DarkCyan" Width="30" Height="30" CornerRadius="15" Margin="0,0,8,0">
@@ -352,7 +352,8 @@
                                         <TextBlock x:Name="QuizMarksText" Text="Loading..." Foreground="White" FontWeight="Bold" FontSize="10" Margin="4,0,0,0"/>
                                     </StackPanel>
 
-                                    <Button Background="{StaticResource GreenGradient}" Click="ViewQuizDetails_Click" Foreground="White" FontWeight="SemiBold" FontSize="15" Height="25" Padding="8,0" BorderThickness="0" Cursor="Hand" Style="{StaticResource ActionButton}" HorizontalAlignment="Left">
+                                    <Button Background="{StaticResource GreenGradient}" Click="ViewQuizDetails_Click" Foreground="White" FontWeight="SemiBold" FontSize="15" Height="25" Padding="8,0" BorderThickness="0" Cursor="Hand" Style="{StaticResource ActionButton}" 
+                                            HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,12,0,0">
                                         <TextBlock Text="View Details" VerticalAlignment="Center"/>
                                     </Button>
                                 </StackPanel>
@@ -452,7 +453,7 @@
                 </TabItem>
             </TabControl>
         </Border>
-
+        
         <!-- Admin Comment Section -->
         <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource DetailCard}" Margin="0,10,0,5">
             <Grid>

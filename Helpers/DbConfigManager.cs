@@ -5,10 +5,20 @@ namespace IMS.Helpers
 {
     public static class DbConfigManager
     {
-        private static readonly string ConfigFile = "dbconfig.txt";
+        // ✅ Save config file in a user-safe location
+        private static readonly string ConfigFolder = Path.Combine(
+            System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+            "IMS"
+        );
+
+        private static readonly string ConfigFile = Path.Combine(ConfigFolder, "dbconfig.txt");
 
         public static void SaveConnectionString(string connStr)
         {
+            // Ensure folder exists
+            if (!Directory.Exists(ConfigFolder))
+                Directory.CreateDirectory(ConfigFolder);
+
             File.WriteAllText(ConfigFile, connStr);
             SetIsConfigured(true);
         }
@@ -45,7 +55,7 @@ namespace IMS.Helpers
             ConfigurationManager.RefreshSection("connectionStrings");
         }
 
-        // ✅ Added helper methods
+        // ✅ Helper methods
         public static bool IsConfigured()
         {
             var val = ConfigurationManager.AppSettings["IsDbConfigured"];
