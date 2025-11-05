@@ -39,8 +39,16 @@ namespace IMS.Views
 
             if (_questions == null || _questions.Count == 0)
             {
-                MessageBox.Show("No quiz available for your designation and experience level.", "Quiz", MessageBoxButton.OK, MessageBoxImage.Warning);
-                this.Visibility = Visibility.Collapsed;
+                MessageBox.Show("No quiz available for your designation and experience level.",
+                                "Quiz", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                Loaded += (s, e) =>
+                {
+                    var parentWindow = Window.GetWindow(this);
+                    if (parentWindow != null)
+                        parentWindow.Close();
+                };
+
                 return;
             }
 
@@ -48,8 +56,7 @@ namespace IMS.Views
             Random rnd = new Random();
             _questions = _questions.OrderBy(q => rnd.Next()).ToList();
 
-            _totalTimeRemaining = _quizDurationInMinutes * 60; // seconds
-
+            _totalTimeRemaining = _quizDurationInMinutes * 60;
             WelcomeText.Text = "Welcome! Ready to take your quiz?";
         }
 
@@ -201,14 +208,9 @@ namespace IMS.Views
 
         private void UpdateTimerUI()
         {
-            // Total time display
             TotalTimeText.Text = $"Total Time Left: {_totalTimeRemaining / 60:D2}:{_totalTimeRemaining % 60:D2}";
-
-            // Per-question progress bar (20s)
             TimerBar.Maximum = 20;
             TimerBar.Value = _questionTimeRemaining;
-
-            // Progress text
             ProgressText.Text = $"Question {_currentIndex + 1} of {_questions.Count}";
         }
 
@@ -237,7 +239,7 @@ namespace IMS.Views
                 OptionsPanel.Children.Add(rb);
             }
 
-            _questionTimeRemaining = 20; // reset for new question
+            _questionTimeRemaining = 20;
             UpdateTimerUI();
         }
 
