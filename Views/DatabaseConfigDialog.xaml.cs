@@ -13,11 +13,6 @@ namespace IMS.Views
             InitializeComponent();
         }
 
-        //private void Cancel_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Application.Current.Shutdown();
-        //}
-
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
             string server = TxtServer.Text.Trim();
@@ -33,17 +28,53 @@ namespace IMS.Views
                 return;
             }
 
-            string connStr =
-                $"Data Source={server};Initial Catalog={db};User ID={user};Password={pass};MultipleActiveResultSets=True";
+            string masterConnStr =
+                $"Data Source={server};Initial Catalog=master;User ID={user};Password={pass};MultipleActiveResultSets=True";
 
             try
             {
+                using (var conn = new SqlConnection(masterConnStr))
+                {
+                    conn.Open();
+
+                    // ✅ Check if database exists
+                    string checkDb = $"SELECT db_id('{db}')";
+                    using (var cmd = new SqlCommand(checkDb, conn))
+                    {
+                        object result = cmd.ExecuteScalar();
+
+                        // ✅ If not exists, create it
+                        if (result == DBNull.Value || result == null)
+                        {
+                            string createDb = $"CREATE DATABASE [{db}]";
+                            using (var createCmd = new SqlCommand(createDb, conn))
+                            {
+                                createCmd.ExecuteNonQuery();
+                            }
+                            MessageBox.Show($"Database '{db}' created successfully.", "Info",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                }
+
+                // ✅ Now connect to the newly created (or existing) database
+                string connStr =
+                    $"Data Source={server};Initial Catalog={db};User ID={user};Password={pass};MultipleActiveResultSets=True";
+
                 using (var conn = new SqlConnection(connStr))
                 {
                     conn.Open();
                 }
 
+                // ✅ Save connection and apply config
                 ConnectionString = connStr;
+                IMS.Helpers.DbConfigManager.SaveConnectionString(connStr);
+                IMS.Helpers.DbConfigManager.ApplyToAppConfig(connStr);
+                IMS.Helpers.DbConfigManager.SetIsConfigured(true);
+
+                MessageBox.Show("Connection successful and configuration saved!", "Success",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
                 this.DialogResult = true;
                 this.Close();
             }

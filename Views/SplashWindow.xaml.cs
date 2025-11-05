@@ -17,25 +17,27 @@ namespace IMS.Views
         {
             try
             {
-                StatusText.Text = "Please provide database credentials...";
+                StatusText.Text = "Checking database configuration...";
 
-                // Always ask for credentials at startup
-                string connStr = null;
+                bool isConfigured = IMS.Helpers.DbConfigManager.IsConfigured();
+                string connStr = IMS.Helpers.DbConfigManager.GetConnectionString();
 
-                var dlg = new DatabaseConfigDialog();
-                bool? result = dlg.ShowDialog();
-
-                if (result == true)
+                // Step 1: If not configured, show dialog
+                if (!isConfigured || string.IsNullOrEmpty(connStr))
                 {
+                    var dlg = new DatabaseConfigDialog();
+                    bool? result = dlg.ShowDialog();
+
+                    if (result != true)
+                    {
+                        Application.Current.Shutdown();
+                        return;
+                    }
+
                     connStr = dlg.ConnectionString;
                 }
-                else
-                {
-                    Application.Current.Shutdown();
-                    return;
-                }
 
-                // Validate connection
+                // Step 2: Validate connection
                 StatusText.Text = "Validating connection...";
                 bool dbConnected = await Task.Run(() => CheckDatabaseConnection(connStr));
 
@@ -43,17 +45,18 @@ namespace IMS.Views
                 {
                     StatusText.Text = "Database connected. Initializing...";
                     await Task.Delay(1500);
-
-                    // Open Main Window
                     new MainWindow().Show();
                     this.Close();
                 }
                 else
                 {
-                    MessageBox.Show("Database connection failed. Please try again.",
+                    MessageBox.Show("Database connection failed. Please reconfigure.",
                         "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    // Reopen Splash (re-ask credentials)
+                    IMS.Helpers.DbConfigManager.ClearConnectionString();
+                    IMS.Helpers.DbConfigManager.SetIsConfigured(false);
+
+                    // Restart splash to retry
                     new SplashWindow().Show();
                     this.Close();
                 }

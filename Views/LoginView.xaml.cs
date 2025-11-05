@@ -11,7 +11,34 @@ namespace IMS.Views
             DataContext = new LoginViewModel();
         }
 
-        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+    public void SettingBtn_Click(object sender, RoutedEventArgs e)
+    {
+        var set = new DatabaseConfigDialog();
+        bool? result = set.ShowDialog();
+
+        if (result == true)
+        {
+            // ✅ Update connection string in App.config
+            string connStr = set.ConnectionString;
+            IMS.Helpers.DbConfigManager.SaveConnectionString(connStr);
+            IMS.Helpers.DbConfigManager.ApplyToAppConfig(connStr);
+            IMS.Helpers.DbConfigManager.SetIsConfigured(true);
+
+            MessageBox.Show("Database configuration updated successfully!\nThe application will now restart to apply the new settings.",
+                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // ✅ Restart the application so the new connection is used
+            System.Windows.Forms.Application.Restart();
+            Application.Current.Shutdown();
+        }
+        else
+        {
+            MessageBox.Show("Database configuration not changed.",
+                "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+
+    private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (DataContext is LoginViewModel vm)
             {

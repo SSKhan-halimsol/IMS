@@ -10,6 +10,7 @@ namespace IMS.Helpers
         public static void SaveConnectionString(string connStr)
         {
             File.WriteAllText(ConfigFile, connStr);
+            SetIsConfigured(true);
         }
 
         public static string GetConnectionString()
@@ -21,6 +22,8 @@ namespace IMS.Helpers
         {
             if (File.Exists(ConfigFile))
                 File.Delete(ConfigFile);
+
+            SetIsConfigured(false);
         }
 
         public static void ApplyToAppConfig(string connStr)
@@ -40,6 +43,25 @@ namespace IMS.Helpers
 
             config.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection("connectionStrings");
+        }
+
+        // ✅ Added helper methods
+        public static bool IsConfigured()
+        {
+            var val = ConfigurationManager.AppSettings["IsDbConfigured"];
+            return val != null && val.ToLower() == "true";
+        }
+
+        public static void SetIsConfigured(bool value)
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            if (config.AppSettings.Settings["IsDbConfigured"] == null)
+                config.AppSettings.Settings.Add("IsDbConfigured", value.ToString().ToLower());
+            else
+                config.AppSettings.Settings["IsDbConfigured"].Value = value.ToString().ToLower();
+
+            config.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection("appSettings");
         }
     }
 }

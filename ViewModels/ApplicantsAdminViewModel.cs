@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -276,8 +277,9 @@ namespace IMS.ViewModels
                         CurrentPage = Math.Max(1, CurrentPage - 1);
                     }
 
+                    ShowSuccessMessage("Applicant deleted successfully!", "Success");
+                    await Task.Delay(100);
                     UpdatePagedApplicants();
-                    MessageBox.Show("Applicant deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -293,6 +295,71 @@ namespace IMS.ViewModels
             }
         }
 
+        private void ShowSuccessMessage(string message, string title = "Success")
+        {
+            var messageWindow = new Window
+            {
+                Title = title,
+                Width = 400,
+                Height = 180,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                ResizeMode = ResizeMode.NoResize,
+                Background = System.Windows.Media.Brushes.Transparent,
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true
+            };
+
+            var border = new Border
+            {
+                Background = new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromRgb(26, 31, 58)),
+                CornerRadius = new CornerRadius(16),
+                BorderThickness = new Thickness(1),
+                BorderBrush = new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromRgb(16, 185, 129)),
+                Padding = new Thickness(30)
+            };
+
+            var stackPanel = new StackPanel();
+
+            var icon = new TextBlock
+            {
+                Text = "✓",
+                FontSize = 48,
+                Foreground = new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromRgb(16, 185, 129)),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 0, 0, 15)
+            };
+
+            var messageText = new TextBlock
+            {
+                Text = message,
+                FontSize = 14,
+                Foreground = System.Windows.Media.Brushes.White,
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            stackPanel.Children.Add(icon);
+            stackPanel.Children.Add(messageText);
+            border.Child = stackPanel;
+            messageWindow.Content = border;
+
+            // Auto-close after 2 seconds
+            var timer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(2)
+            };
+            timer.Tick += (s, e) =>
+            {
+                timer.Stop();
+                messageWindow.Close();
+            };
+            timer.Start();
+
+            messageWindow.ShowDialog();
+        }
         // ✅ PAGINATION CONTROLS
         private void NextPage()
         {
