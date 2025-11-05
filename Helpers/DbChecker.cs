@@ -8,7 +8,8 @@ namespace IMS.Helpers
     public static class DbChecker
     {
         public static string ConnectionString =>
-            @"Data Source=192.168.1.188;Initial Catalog=IMS;User ID=sa;Password=123456;MultipleActiveResultSets=True";
+    IMS.Helpers.DbConfigManager.GetConnectionString() ??
+                @"Data Source=localhost;Initial Catalog=IMS;Integrated Security=True;MultipleActiveResultSets=True";
         private const string TargetDatabaseName = "IMS";
 
         public static bool EnsureDatabase()

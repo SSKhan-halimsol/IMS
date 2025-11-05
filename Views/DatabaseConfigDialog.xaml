@@ -1,0 +1,64 @@
+﻿<Window x:Class="IMS.Views.DatabaseConfigDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Database Configuration"
+        Height="350" Width="400"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#1E1E1E">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,10">
+            <Viewbox Width="48" Height="48" Margin="0,0,0,15">
+                <Canvas Width="24" Height="24">
+                    <Path Fill="#9EFF00"
+                  Data="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                </Canvas>
+            </Viewbox>
+
+            <TextBlock Text="Database Configuration"
+               Foreground="#9EFF00"
+               FontSize="20"
+               FontWeight="Bold"
+               HorizontalAlignment="Center"/>
+
+            <TextBlock Text="Connect to your database server"
+               Foreground="#808080"
+               FontSize="12"
+               HorizontalAlignment="Center"
+               Margin="0,5,0,0"/>
+            <!-- Divider -->
+            <Border Height="1" Background="#2D2D2D" Margin="0,15,0,25"/>
+        </StackPanel>
+
+
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0">
+                <TextBlock Text="Database Server:" Foreground="Bisque"></TextBlock>
+                <TextBlock Text="Database name:" Foreground="Bisque"></TextBlock>
+                <TextBlock Text="Username:" Foreground="Bisque"></TextBlock>
+                <TextBlock Text="Password:" Foreground="Bisque"></TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
+                <TextBox x:Name="TxtServer"/>
+                <TextBox x:Name="TxtDatabase"/>
+                <TextBox x:Name="TxtUser"/>
+                <PasswordBox x:Name="TxtPassword"/>
+            </StackPanel>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <!--<Button Content="Cancel" Width="90" Margin="0,0,10,0" Click="Cancel_Click"/>-->
+            <Button Content="Connect" FontWeight="Bold" IsDefault="True" Width="100" Background="#9EFF00" Click="Connect_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

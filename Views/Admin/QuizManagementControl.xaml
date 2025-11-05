@@ -727,7 +727,7 @@
                             </ListView.Resources>
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Answer Text" Width="420">
+                                    <GridViewColumn Header="Answer Text" Width="300">
                                         <GridViewColumn.HeaderContainerStyle>
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#0F172A"/>
@@ -740,7 +740,7 @@
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBox Text="{Binding AnswerText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
-                                                         Width="400" 
+                                                         Width="350" HorizontalAlignment="Left"
                                                          Background="#1E293B" 
                                                          Foreground="White" 
                                                          CaretBrush="White"

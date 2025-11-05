@@ -246,7 +246,7 @@
             <Border Grid.Row="1" Style="{StaticResource DetailCard}"
                     Background="#0F172A" 
                     CornerRadius="12" 
-                    Margin="0,0,0,20"
+                    Margin="0,0,0,10"
                     BorderBrush="#1E293B"
                     BorderThickness="1">
                 <Border.Effect>
@@ -375,9 +375,9 @@
                                             </Border>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                                 <TextBlock Text="Applicant Quiz" Foreground="White" FontSize="15" FontWeight="Bold" Margin="0,0,0,4"/>
-                                                <TextBlock Text="                   " ></TextBlock>
-                                                <Button Background="{StaticResource GreenGradient}" Click="ViewQuizDetails_Click" Foreground="White" FontWeight="SemiBold" FontSize="13" Height="35" Width="120" BorderThickness="0" Cursor="Hand" Style="{StaticResource ActionButton}">
-                                                    <TextBlock Text="Quiz Details" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                                <TextBlock Text="     " ></TextBlock>
+                                                <Button Background="{StaticResource GreenGradient}" Click="ViewQuizDetails_Click" Foreground="White" FontWeight="SemiBold" FontSize="13" Height="35" Width="110" BorderThickness="0" Cursor="Hand" Style="{StaticResource ActionButton}">
+                                                    <TextBlock Text="Quiz Details" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 </Button>
                                             </StackPanel>
                                             
@@ -483,13 +483,13 @@
             <!-- Admin Comment Section -->
             <Border Grid.Row="2" Style="{StaticResource DetailCard}">
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                        <Border Background="{StaticResource YellowGradient}" Width="4" Height="24" CornerRadius="2" Margin="0,0,12,0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Border Background="{StaticResource YellowGradient}" Width="4" Height="20" CornerRadius="2" Margin="0,0,12,0"/>
                         <TextBlock Text="Admin Comment" Style="{StaticResource SectionTitle}" Margin="0" VerticalAlignment="Center"/>
                     </StackPanel>
 
                     <TextBox x:Name="CommentBox"
-                             Height="100"
+                             Height="90"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
                              Style="{StaticResource CommentTextBox}"
@@ -503,7 +503,7 @@
                             FontSize="13"
                             Height="44"
                             Width="160"
-                            Margin="0,16,0,0"
+                            Margin="0,13,0,-8"
                             HorizontalAlignment="Left"
                             BorderThickness="0"
                             Style="{StaticResource ActionButton}"/>
@@ -527,7 +527,7 @@
                             Foreground="White"
                             FontWeight="SemiBold"
                             FontSize="14"
-                            Height="70"
+                            Height="65"
                             Margin="0,0,10,0"
                             BorderThickness="0"
                             Style="{StaticResource ActionButton}">
@@ -545,7 +545,7 @@
                             Foreground="White"
                             FontWeight="SemiBold"
                             FontSize="14"
-                            Height="70"
+                            Height="65"
                             Margin="5,0"
                             BorderThickness="0"
                             Style="{StaticResource ActionButton}">
@@ -562,7 +562,7 @@
                             Foreground="White"
                             FontWeight="SemiBold"
                             FontSize="14"
-                            Height="70"
+                            Height="65"
                             Margin="10,0,0,0"
                             BorderThickness="0"
                             Style="{StaticResource ActionButton}">

@@ -110,6 +110,7 @@
     <Compile Include="Data\ApplicantRepository.cs" />
     <Compile Include="Data\DesignationRepository.cs" />
     <Compile Include="Data\IMSDbContext.cs" />
+    <Compile Include="Helpers\DbConfigManager.cs" />
     <Compile Include="Helpers\EqualityConverter.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -153,6 +154,9 @@
     <Compile Include="Views\Admin\SuccessfulCandidatesControl.xaml.cs">
       <DependentUpon>SuccessfulCandidatesControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DatabaseConfigDialog.xaml.cs">
+      <DependentUpon>DatabaseConfigDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
@@ -194,6 +198,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Admin\SuccessfulCandidatesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DatabaseConfigDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -296,8 +304,6 @@
     <Resource Include="icon2.ico" />
     <Resource Include="Photos\logout.png" />
     <Resource Include="icon.ico" />
-    <Content Include="SQL\001_CreateTables.sql" />
-    <Content Include="SQL\002_DefaultData.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
