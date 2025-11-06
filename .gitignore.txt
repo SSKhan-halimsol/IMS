@@ -1,0 +1,28 @@
+﻿# Ignore build and user-specific files
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.pdb
+
+# Include source code and project files
+!*.sln
+!*.csproj
+!*.xaml
+!*.cs
+!*.config
+!*.resx
+!*.ico
+!*.png
+!*.jpg
+
+# Include the Installer project
+!IMS Installer/**
+!*.vdproj
+
+# Optional: Ignore local database or temp files
+*.mdf
+*.ldf
+*.dbconfig

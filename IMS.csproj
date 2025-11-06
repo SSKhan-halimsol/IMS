@@ -293,7 +293,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include=".gitignore.txt" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Photos\splash.PNG" />
     <Resource Include="Photos\admin.png" />
