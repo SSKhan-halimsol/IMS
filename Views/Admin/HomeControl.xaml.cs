@@ -29,7 +29,7 @@ namespace IMS.Views.Admin
 
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Logged out successfully!", "Logout", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show("Logged out successfully!", "Logout", MessageBoxButton.OK, MessageBoxImage.Information);
             LoginView login = new LoginView();
             login.Show();
             Window.GetWindow(this)?.Close();
